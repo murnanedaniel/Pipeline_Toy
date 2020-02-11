@@ -1,0 +1,13 @@
+md5: 953f8216aa493805ec3827b90781840b
+cmd: python src/train.py data/ cifar_net.pth
+deps:
+- md5: e0281be7f5cc658d20c880b7de7b6a38
+  path: src/train.py
+- md5: e252d2c8ba36d1ab3e21a873ab62daa3.dir
+  path: data
+outs:
+- md5: 4cf7c39f6922173655339790c5f8e272
+  path: cifar_net.pth
+  cache: true
+  metric: false
+  persist: false

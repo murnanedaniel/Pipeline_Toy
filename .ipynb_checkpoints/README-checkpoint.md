@@ -35,6 +35,7 @@ Now we have a sanity check on the data and model, we should move to a pipeline s
 With minimal changes, we should be able to pull the relevant Jupyter sections into these files. See the completed files for tips on doing this. 
 
 * Move all functions into prepare.py, train.py and evaluate.py
+* Remove model file (otherwise `dvc run` fails!)
 * git add and dvc push
 
 For the moment, only the train file is really doing anything interesting. Let us run the same training as in the Jupyter notebook, but now we will run it from the command-line, wrapped in a `dvc run` command.
