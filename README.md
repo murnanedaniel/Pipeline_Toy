@@ -36,18 +36,38 @@ With minimal changes, we should be able to pull the relevant Jupyter sections in
 
 * Move all functions into prepare.py, train.py and evaluate.py
 * Remove model file (otherwise `dvc run` fails!)
-* git add and dvc push
+* git ac
 
 For the moment, only the train file is really doing anything interesting. Let us run the same training as in the Jupyter notebook, but now we will run it from the command-line, wrapped in a `dvc run` command.
 ```
-dvc run ...
+dvc run -f train.dvc \ 
+        -d src/train.py \
+        -d data/ \
+        -o cifar_net.pth \
+        python src/train.py data/ cifar_net.pth
 ```
 Essentially, this is building a pipeline that DVC can keep track of - consisting of "dependencies" and "staging" files. The tag `-f` allows us to name this particular "stage", and the `-d` tags tell DVC what this stage depends on. Any output goes to a `-o` tag. This is all followed by the actual commands of the stage, in this case a python execution. This can be pictured as
 ```
 dependencies  ----> stage ----> outputs
 ```
 
+* git ac and dvc push
 * Check that the pipeline exists with a visualisation
+
+We see:
+
+```
++----------+   
+| data.dvc |   
++----------+   
+      *        
+      *        
+      *        
++-----------+  
+| train.dvc |  
++-----------+ 
+```
+
 * Add evaluation to the pipeline
 * Add metric
 * Check the full pipeline with visualisation

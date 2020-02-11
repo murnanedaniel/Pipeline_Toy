@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+import argparse
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,14 +30,28 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser('train.py')
+    add_arg = parser.add_argument
+    add_arg('input', default='./data', help="The directory of image training data")
+    add_arg('model', default='./cifar_net.pth', help="The path to load model data from")
+    add_arg('metric_file', default='acc.metric', help="The path to save the accuracy of this file to")
 
+    return parser.parse_args()
+    
 def main():
+    
+    # Parse the command line
+    args = parse_args()
     
     transform = transforms.Compose(
     [transforms.ToTensor(),
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    testset = torchvision.datasets.CIFAR10(root='./data', train=False,
+    input_dir = args.input
+    
+    testset = torchvision.datasets.CIFAR10(root=input_dir, train=False,
                                            download=True, transform=transform)
     testloader = torch.utils.data.DataLoader(testset, batch_size=4,
                                              shuffle=False, num_workers=2)
@@ -51,8 +66,8 @@ def main():
     # model = Edge_Class_Net( input_dim=2, hidden_dim=64, n_graph_iters=4).to(device)
     model = Net().to(device)
     
-    PATH = './cifar_net.pth'
-    model.load_state_dict(torch.load(PATH))
+    model_dir = args.model
+    model.load_state_dict(torch.load(model_dir))
 
     
     criterion = nn.CrossEntropyLoss()
@@ -67,10 +82,12 @@ def main():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-    print('Accuracy of the network on the 10000 test images: %d %%' % (
-            100 * correct / total))
+    acc = 100 * correct / total
+    print('Accuracy of the network on the 10000 test images: %d %%' % acc )
         
-    # Put in efficiency and purity metrics!
+    metrics = np.asarray([acc, total])
+    metric_file = args.metric_file
+    np.savetxt(metric_file, metrics)
     
 if __name__ == '__main__':
     main()
