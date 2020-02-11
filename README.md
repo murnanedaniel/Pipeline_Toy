@@ -70,7 +70,61 @@ We see:
 
 * Add evaluation to the pipeline
 * Add metric
+
+```
+dvc run -f evaluate.dvc \
+        -d src/evaluate.py \
+        -d cifar_net.pth \
+        -d data \
+        -m acc.metric \
+        python src/evaluate.py data cifar_net.pth acc.metric
+```
+
 * Check the full pipeline with visualisation
+
+Let's make sure that running this stage has integrated into the pipeline, with `dvc pipeline show --ascii evaluate.dvc`, and we get
+
+```
+  +----------+   
+  | data.dvc |   
+  +----------+   
+        *        
+        *        
+        *        
+  +-----------+  
+  | train.dvc |  
+  +-----------+  
+        *        
+        *        
+        *        
++--------------+ 
+| evaluate.dvc | 
++--------------+
+```
+Whereas, running `dvc pipeline show --ascii evaluate.dvc --outs` gives the data dependencies
+```
+
+                            +--------------+            +------+  
+                            | src/train.py |          **| data |  
+                            +--------------+       ***  +------+  
+                                    *         *****         *     
+                                    *      ***              *     
+                                    *   ***                 *     
++-----------------+        +---------------+              ***     
+| src/evaluate.py |        | cifar_net.pth |          ****        
++-----------------+**      +---------------+      ****            
+                     ****          *          ****                
+                         ****      *      ****                    
+                             ***   *   ***                        
+                            +------------+                        
+                            | acc.metric |                        
+                            +------------+  
+```
+
+This means: the input `data` and `train.py` files are independent, the model file depends on the network and data, and the final metrics depends on the model file and the data its evaluated on.
+
+Try running `dvc repro evaluate.dvc`, nothing should happen since all the data and model files are in sync with the outputs and metrics.
+
 * Tag this run as baseline
 
 ### Changing the Model
