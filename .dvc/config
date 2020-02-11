@@ -1,0 +1,4 @@
+['remote "myremote"']
+url = /global/cscratch1/sd/danieltm/Toy_Storage
+[core]
+remote = myremote
