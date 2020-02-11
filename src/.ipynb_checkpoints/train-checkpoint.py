@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+import argparse
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -29,24 +30,37 @@ class Net(nn.Module):
         x = self.fc3(x)
         return x
 
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser('train.py')
+    add_arg = parser.add_argument
+    add_arg('input', default='./data', help="The directory of image training data")
+    add_arg('output', default='./cifar_net.pth', help="The path to save model data to")
+
+    return parser.parse_args()
 
 def main():
+    
+    # Parse the command line
+    args = parse_args()
     
     transform = transforms.Compose(
     [transforms.ToTensor(),
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    trainset = torchvision.datasets.CIFAR10(root='./data', train=True,
+    input_dir = args.input
+    
+    trainset = torchvision.datasets.CIFAR10(root=input_dir, train=True,
                                         download=True, transform=transform)
     trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
                                               shuffle=True, num_workers=2)
 
-    testset = torchvision.datasets.CIFAR10(root='./data', train=False,
+    testset = torchvision.datasets.CIFAR10(root=input_dir, train=False,
                                            download=True, transform=transform)
     testloader = torch.utils.data.DataLoader(testset, batch_size=4,
                                              shuffle=False, num_workers=2)
 
-classes = ('plane', 'car', 'bird', 'cat',
+    classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
     
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -98,6 +112,9 @@ classes = ('plane', 'car', 'bird', 'cat',
             100 * correct / total))
         
     print('Finished Training')
+    
+    output_dir = args.output
+    torch.save(model.state_dict(), output_dir)
     
 if __name__ == '__main__':
     main()
