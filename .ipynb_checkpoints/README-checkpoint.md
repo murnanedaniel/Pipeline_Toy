@@ -71,6 +71,8 @@ We see:
 * **Add evaluation to the pipeline**
 * **Add metric**
 
+We will add an evaluation step to get some information about how the model performs. To start, let's just save the accuracy, and the time it took to run the inference of the model. These are two of the most important factors in deciding which model we will eventually ship.
+
 ```
 dvc run -f evaluate.dvc \
         -d src/evaluate.py \
@@ -125,9 +127,22 @@ This means: the input `data` and `train.py` files are independent, the model fil
 
 Try running `dvc repro evaluate.dvc`, nothing should happen since all the data and model files are in sync with the outputs and metrics.
 
-Then
+Let's establish this first run as the baseline to improve upon. We'll commit the run 
+```
+git ac -m "Evaluate baseline"
+dvc push
+```
+and tag it
+```
+git tag -a "baseline" -m "Evaluate baseline"
+```
+to give some intuition to when we compare back to it. Note that if we then push the commit, we need to add a `tag` flag
+```
+git push origin tag baseline
+``` 
+or `git push --tags` to push all tags. 
 
-* Tag this run as baseline
+* **Tag this run as baseline**
 
 ### Changing the Model
 

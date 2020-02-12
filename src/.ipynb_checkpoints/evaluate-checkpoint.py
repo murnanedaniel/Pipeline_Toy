@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 
+import time
 import argparse
 
 import matplotlib.pyplot as plt
@@ -73,6 +74,8 @@ def main():
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)
     
+    tic = time.time()
+    
     model.eval()
     correct, total = 0, 0
     for data in testloader:
@@ -81,11 +84,12 @@ def main():
         _, predicted = torch.max(outputs.data, 1)
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
-
+    toc = time.time()
+    
     acc = 100 * correct / total
     print('Accuracy of the network on the 10000 test images: %d %%' % acc )
         
-    metrics = np.asarray([acc, total])
+    metrics = np.asarray([acc, toc - tic ])
     metric_file = args.metric_file
     np.savetxt(metric_file, metrics)
     
