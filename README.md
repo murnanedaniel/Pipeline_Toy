@@ -147,6 +147,18 @@ or `git push --tags` to push all tags.
 ### Changing the Model
 
 * Update some hyperparameters
+Let's make the model wider (i.e. increase the size of the hidden layer of the convolution). First, refactor out the model information into a file called `convNet.py` in a `src/models/` directory. We will import this model into the evaluation and training with 
+
+``` from models.convNet import Net```
+
+Now increase the second and first arguments of the first and second convolution layers (respectively) to something like 36. Now the beauty of DVC: simply run 
+
+```
+dvc repro evaluate.dvc
+```
+
+and all of the steps leading to the new metric evaluation will be completed, with dependencies correctly handled. Go ahead and comm
+
 * git commit, dvc push
 * Run the model with `dvc repro`
 * Checkout to go back to master
