@@ -34,9 +34,9 @@ Now we have a sanity check on the data and model, we should move to a pipeline s
     
 With minimal changes, we should be able to pull the relevant Jupyter sections into these files. See the completed files for tips on doing this. 
 
-* Move all functions into prepare.py, train.py and evaluate.py
-* Remove model file (otherwise `dvc run` fails!)
-* git ac
+* **Move all functions into prepare.py, train.py and evaluate.py**
+* **Remove model file (otherwise `dvc run` fails!)**
+* **git ac**
 
 For the moment, only the train file is really doing anything interesting. Let us run the same training as in the Jupyter notebook, but now we will run it from the command-line, wrapped in a `dvc run` command.
 ```
@@ -51,8 +51,8 @@ Essentially, this is building a pipeline that DVC can keep track of - consisting
 dependencies  ----> stage ----> outputs
 ```
 
-* git ac and dvc push
-* Check that the pipeline exists with a visualisation
+* **git ac and dvc push**
+* **Check that the pipeline exists with a visualisation**
 
 We see:
 
@@ -68,8 +68,8 @@ We see:
 +-----------+ 
 ```
 
-* Add evaluation to the pipeline
-* Add metric
+* **Add evaluation to the pipeline**
+* **Add metric**
 
 ```
 dvc run -f evaluate.dvc \
@@ -80,7 +80,7 @@ dvc run -f evaluate.dvc \
         python src/evaluate.py data cifar_net.pth acc.metric
 ```
 
-* Check the full pipeline with visualisation
+* **Check the full pipeline with visualisation**
 
 Let's make sure that running this stage has integrated into the pipeline, with `dvc pipeline show --ascii evaluate.dvc`, and we get
 
@@ -124,6 +124,8 @@ Whereas, running `dvc pipeline show --ascii evaluate.dvc --outs` gives the data 
 This means: the input `data` and `train.py` files are independent, the model file depends on the network and data, and the final metrics depends on the model file and the data its evaluated on.
 
 Try running `dvc repro evaluate.dvc`, nothing should happen since all the data and model files are in sync with the outputs and metrics.
+
+Then
 
 * Tag this run as baseline
 
