@@ -157,10 +157,26 @@ Now increase the second and first arguments of the first and second convolution 
 dvc repro evaluate.dvc
 ```
 
-and all of the steps leading to the new metric evaluation will be completed, with dependencies correctly handled. Go ahead and comm
+and all of the steps leading to the new metric evaluation will be completed, with 
+dependencies correctly handled. Go ahead and commit, push and tag this experiment
 
-* git commit, dvc push
-* Run the model with `dvc repro`
+```
+git ac -m "Size 36 convNet"
+dvc push
+git tag -a "36-convnet" -m "Size 36 convNet"
+git push --tags
+git push
+```
+(Of course, all of these commands could be combined in a simple alias, but I use them here as a reminder of what is happening).
+
+* **git commit, dvc push**
+* **Run the model with `dvc repro`**
+
+Do you remember what the baseline model's accuracy was? Luckily, we can quickly check. 
+
+
+
+
 * Checkout to go back to master
 * Compare metrics
 
