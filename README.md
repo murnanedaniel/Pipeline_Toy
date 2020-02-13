@@ -14,7 +14,7 @@ For Cori, module load pytorch/v1.2.0-gpu
 
 ## Tutorial
 
-We will proceed with the tutorial in a way that we would actually explore data, and experiment with DNN models. To begin, we will fire up a Jupyter notebook to ensure that our data makes sense, and we can train at least one model on it.
+We will proceed with the tutorial in a way that we would actually explore data, and experiment with DNN models. This means we will not take the fastest line to results, but meander and refactor to incorporate improvements to our pipeline along the way. To begin, we will fire up a Jupyter notebook to ensure that our data makes sense, and we can train at least one model on it.
 
 ### Jupyter Exploration
 
@@ -246,6 +246,8 @@ Now we need to make the following additions to our `train.py` script:
 You can see my output with https://app.wandb.ai/murnanedaniel/convnet-toy
 
 ## Hyperparameter Optimisation
+
+Broadly, our model can be described as a convolution with kernel size $e^{i\pi}$
 
 * Incorporate sweep agent in training.py
 * Run the sweep on interactive node
