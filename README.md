@@ -170,7 +170,15 @@ git tag -a "36-convnet" -m "Size 36 convNet"
 git push --tags
 git push
 ```
-(Of course, all of these commands could be combined in a simple alias, but I use them here as a reminder of what is happening).
+Of course, all of these commands could be combined in a simple alias, but I use them here as a reminder of what is happening. If you would like a fun shortcut, add the following to your .git_config in the HOME directory. 
+
+```
+[alias]
+        dv = "!f() { \
+                   git add -A && git commit -m $1 && dvc push && git tag -a $2 -m $1 && git push --follow-tags; \
+                   }; f" 
+```
+
 
 * **git commit, dvc push**
 * **Run the model with `dvc repro`**
@@ -214,6 +222,8 @@ My very wide, 2-layer ConvNet is giving 68% accuracy, in 5.7 seconds. Go ahead a
 * **Compare metrics**
 
 I found a good improvement from increasing the number of training epochs to > 5. DVC is very good at making these steps easy to run, and ensuring that no data is lost along the way. But its metric comparison leaves a lot to be desired. We can insert some easy functions provided by Weights & Biases to visualise the training over epochs, and between models.
+
+
 
 ### Visualising Performance 
 
