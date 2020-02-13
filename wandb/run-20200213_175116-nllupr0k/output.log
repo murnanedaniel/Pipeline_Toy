@@ -1,0 +1,9 @@
+Using  cpu
+Traceback (most recent call last):
+  File "src/train.py", line 123, in <module>
+    main()
+  File "src/train.py", line 118, in main
+    train(model, device, trainloader, testloader, output_dir)
+  File "src/train.py", line 55, in train
+    training_loss += loss.item()
+UnboundLocalError: local variable 'training_loss' referenced before assignment
