@@ -187,11 +187,33 @@ Let's make more changes...
 
 **Need to shuffle some DVC add things here, so that the models directory is under DVC control**
 
-Try running repro evaluate. Should say that nothing has changed. That's because now we're only changing our model file, which is not under DVC control or part of the pipeline. We need to update the pipeline to reflect our refactored structure. `dvc add` the models/ directory, and re-run the `dvc run` commands above, with `-d src/models/` included as a flag. We will see the new model's performance - it's even better for me
+Try running repro evaluate. Should say that nothing has changed. That's because now we're only changing our model file, which is not under DVC control or part of the pipeline. We need to update the pipeline to reflect our refactored structure. `dvc add` the models/ directory, and re-run the `dvc run` commands above, with `-d src/models/` included as a flag. We will see the new model's performance - it's even better for me. Commit, push and tag it. Compare metrics, and I have
+
+```
+working tree:                                                           
+        acc.metric:
+                6.829999999999999716e+01
+                5.750573873519897461e+00
+36-convnet:
+        acc.metric:
+                5.759000000000000341e+01
+                5.656264781951904297e+00
+baseline:
+        acc.metric:
+                5.602000000000000313e+01
+                7.337175607681274414e+00
+huge-convnet:
+        acc.metric:
+                6.829999999999999716e+01
+                5.750573873519897461e+00
+```
+
+My very wide, 2-layer ConvNet is giving 68% accuracy, in 5.7 seconds. Go ahead and change some more of the hyperparameters, running `dvc repro evaluate.dvc` and commiting and tagging each experiment. 
 
 * **Checkout to go back to master**
 * **Compare metrics**
 
+I found a good improvement from increasing the number of training epochs to > 5. DVC is very good at making these steps easy to run, and ensuring that no data is lost along the way. But its metric comparison leaves a lot to be desired. We can insert some easy functions provided by Weights & Biases to visualise the training over epochs, and between models.
 
 ### Visualising Performance 
 

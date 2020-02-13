@@ -1,16 +1,16 @@
-md5: d563897d87e6a02284db07ca9aad6bdc
+md5: 1fdfdb2a12ebc118d5c315da22d87a43
 cmd: python src/evaluate.py data cifar_net.pth acc.metric
 deps:
 - md5: c37eff39e482ad3cfd7c73ecb957e9e3
   path: src/evaluate.py
-- md5: 468989fb43485232bc61ee29e2ec4fce
+- md5: b83a99dce44df754fb7d2e8c1c85a6b0
   path: cifar_net.pth
 - md5: e252d2c8ba36d1ab3e21a873ab62daa3.dir
   path: data
-- md5: 7b1222256cfe3bec5f6c8c6c722adcf3.dir
+- md5: 14325ea43096c770cf48c85bafa3c7d1.dir
   path: src/models
 outs:
-- md5: 39f73f463e73158e9a906bf6a122a4b8
+- md5: 0fc986fdc34beb8e0db9e1bcf3ffa0bf
   path: acc.metric
   cache: true
   metric: true
