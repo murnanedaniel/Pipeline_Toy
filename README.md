@@ -153,6 +153,7 @@ Let's make the model wider (i.e. increase the size of the hidden layer of the co
 
 ``` from models.convNet import Net```
 
+
 Now increase the second and first arguments of the first and second convolution layers (respectively) to something like 36. Now the beauty of DVC: simply run 
 
 ```
@@ -181,6 +182,12 @@ dvc metrics show -T
 ```
 
 If you're anything like me, you'll see that the model did a little better. It may have even been faster.
+
+Let's make more changes...
+
+**Need to shuffle some DVC add things here, so that the models directory is under DVC control**
+
+Try running repro evaluate. Should say that nothing has changed. That's because now we're only changing our model file, which is not under DVC control or part of the pipeline. We need to update the pipeline to reflect our refactored structure. `dvc add` the models/ directory, and re-run the `dvc run` commands above, with `-d src/models/` included as a flag. We will see the new model's performance - it's even better for me
 
 * **Checkout to go back to master**
 * **Compare metrics**

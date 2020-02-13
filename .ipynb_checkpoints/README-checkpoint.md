@@ -153,6 +153,7 @@ Let's make the model wider (i.e. increase the size of the hidden layer of the co
 
 ``` from models.convNet import Net```
 
+
 Now increase the second and first arguments of the first and second convolution layers (respectively) to something like 36. Now the beauty of DVC: simply run 
 
 ```
@@ -181,6 +182,12 @@ dvc metrics show -T
 ```
 
 If you're anything like me, you'll see that the model did a little better. It may have even been faster.
+
+Let's make more changes...
+
+**Need to shuffle some DVC add things here, so that the models directory is under DVC control**
+
+Try running repro evaluate. Should say that nothing has changed
 
 * **Checkout to go back to master**
 * **Compare metrics**
