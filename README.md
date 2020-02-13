@@ -191,7 +191,7 @@ dvc metrics show -T
 
 If you're anything like me, you'll see that the model did a little better. It may have even been faster.
 
-Let's make more changes...
+Let's make more changes... 
 
 **Need to shuffle some DVC add things here, so that the models directory is under DVC control**
 
