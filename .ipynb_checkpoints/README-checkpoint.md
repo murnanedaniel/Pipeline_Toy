@@ -167,8 +167,7 @@ dependencies correctly handled. Go ahead and commit, push and tag this experimen
 git ac -m "Size 36 convNet"
 dvc push
 git tag -a "36-convnet" -m "Size 36 convNet"
-git push --tags
-git push
+git push --follow-tags
 ```
 Of course, all of these commands could be combined in a simple alias, but I use them here as a reminder of what is happening. If you would like a fun shortcut, add the following to your .git_config in the HOME directory. 
 
@@ -178,6 +177,7 @@ Of course, all of these commands could be combined in a simple alias, but I use 
                    git add -A && git commit -m $1 && dvc push && git tag -a $2 -m $1 && git push --follow-tags; \
                    }; f" 
 ```
+and run with `git dv "Commit_message" "tag-name"`.
 
 
 * **git commit, dvc push**
@@ -225,11 +225,31 @@ I found a good improvement from increasing the number of training epochs to > 5.
 
 
 
-### Visualising Performance 
+## Visualising Performance 
 
 * Include W&B in training
+
+To begin, ensure that W&B is installed with `pip install --user wandb`. You will also need run wandb login from the command line, ensuring you have a W&B account.
+
+Now we need to make the following additions to our `train.py` script:
+1. `import wandb` in the prelogue
+2. `wandb.init(project="convnet-toy")` before the training loop
+3. `wandb.watch(model, log="all")` in the train() function
+4. `wandb.log({"train loss": train_loss, "val loss": val_loss, "val accuracy": val_acc})` at the end of each training epoch
+
+* Run an evaluation
+
+
+
 * Show some plots
 
+You can see my output with https://app.wandb.ai/murnanedaniel/convnet-toy
+
+## Hyperparameter Optimisation
+
+* Incorporate sweep agent in training.py
+* Run the sweep on interactive node
+* Submit it as batch job... debug this
 
 ### Update the Dataset
 
