@@ -1,7 +1,0 @@
-md5: 0f60ac95f4e04bad0b8922e5d110fcf8
-outs:
-- md5: 61410bcf84e2d4db6a3072b2b19cc906
-  path: cifar_net.pth
-  cache: true
-  metric: false
-  persist: false
