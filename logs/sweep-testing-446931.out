@@ -1,0 +1,33 @@
+
+Starting preprocessing
+
+Launching task 0
+wandb: Starting wandb agent 🕵️
+2020-02-13 16:21:34,716 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:21:34,926 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:21:34,927 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 551
+	hidden_dim_2: 981
+	hidden_dim_3: 2447
+	hidden_dim_4: 674
+	kern_1: 6
+	kern_2: 8
+	lr: 6.443209842941887e-05
+	momentum: 0.5896012280536858
+	n_epochs: 6
+2020-02-13 16:21:34,937 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=551 --hidden_dim_2=981 --hidden_dim_3=2447 --hidden_dim_4=674 --kern_1=6 --kern_2=8 --lr=6.443209842941887e-05 --momentum=0.5896012280536858 --n_epochs=6
+wandb: Tracking run with wandb version 0.8.27
+wandb: Run data is saved locally in wandb/run-20200214_002134-gx86i54i
+wandb: Syncing run balmy-sweep-2
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/gx86i54i
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+2020-02-13 16:21:39,951 - wandb.wandb_agent - INFO - Running runs: ['gx86i54i']
+Using  cuda
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** STEP 446931.0 ON cgpu18 CANCELLED AT 2020-02-13T16:23:39 ***
+slurmstepd: error: *** JOB 446931 ON cgpu18 CANCELLED AT 2020-02-13T16:23:39 ***

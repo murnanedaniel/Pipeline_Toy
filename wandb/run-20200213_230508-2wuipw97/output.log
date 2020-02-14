@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "src/sweep_test.py", line 139, in <module>
+    main()
+Using  cuda
+  File "src/sweep_test.py", line 78, in main
+    m_configs = {**m_configs, 'output_dim': 10} # Manually specify any HPs not part of the sweep
+TypeError: 'set' object is not a mapping

@@ -1,0 +1,35 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.8.27
+    is_jupyter_run: false
+    python_version: 3.6.9
+hidden_dim_1:
+  desc: null
+  value: 819
+hidden_dim_2:
+  desc: null
+  value: 724
+hidden_dim_3:
+  desc: null
+  value: 2970
+hidden_dim_4:
+  desc: null
+  value: 158
+kern_1:
+  desc: null
+  value: 3
+kern_2:
+  desc: null
+  value: 6
+lr:
+  desc: null
+  value: 0.012732924427865304
+momentum:
+  desc: null
+  value: 0.2047506579879408
+n_epochs:
+  desc: null
+  value: 7

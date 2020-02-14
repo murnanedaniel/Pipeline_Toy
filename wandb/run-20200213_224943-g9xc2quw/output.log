@@ -1,0 +1,9 @@
+Using  cuda
+Traceback (most recent call last):
+  File "src/sweep_test.py", line 138, in <module>
+    main()
+  File "src/sweep_test.py", line 76, in main
+    m_configs = {args[k] for k in m_dic} # Retrieve the HPs from W&B
+  File "src/sweep_test.py", line 76, in <setcomp>
+    m_configs = {args[k] for k in m_dic} # Retrieve the HPs from W&B
+TypeError: 'Namespace' object is not subscriptable

@@ -1,0 +1,40 @@
+
+Starting preprocessing
+
+Launching task 0
+wandb: Starting wandb agent 🕵️
+2020-02-13 16:21:12,856 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:21:13,074 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:21:13,074 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 208
+	hidden_dim_2: 838
+	hidden_dim_3: 3771
+	hidden_dim_4: 676
+	kern_1: 3
+	kern_2: 7
+	lr: 0.0004909002742508029
+	momentum: 0.6230888667883765
+	n_epochs: 6
+2020-02-13 16:21:13,083 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=208 --hidden_dim_2=838 --hidden_dim_3=3771 --hidden_dim_4=676 --kern_1=3 --kern_2=7 --lr=0.0004909002742508029 --momentum=0.6230888667883765 --n_epochs=6
+wandb: Tracking run with wandb version 0.8.27
+wandb: Run data is saved locally in wandb/run-20200214_002113-t02777l2
+2020-02-13 16:21:18,095 - wandb.wandb_agent - INFO - Running runs: ['t02777l2']
+wandb: Syncing run rich-sweep-1
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/t02777l2
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+Using  cuda
+[1,  2000] loss: 2.227
+[1,  4000] loss: 1.971
+[1,  6000] loss: 1.851
+[1,  8000] loss: 1.737
+[1, 10000] loss: 1.656
+[1, 12000] loss: 1.581
+Accuracy of the network on the 10000 test images: 44 %
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** JOB 446929 ON cgpu03 CANCELLED AT 2020-02-13T16:23:46 ***
+slurmstepd: error: *** STEP 446929.0 ON cgpu03 CANCELLED AT 2020-02-13T16:23:46 ***

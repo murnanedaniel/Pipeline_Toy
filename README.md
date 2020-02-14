@@ -247,10 +247,158 @@ You can see my output with https://app.wandb.ai/murnanedaniel/convnet-toy
 
 ## Hyperparameter Optimisation
 
-Broadly, our model can be described as a convolution with kernel size $e^{i\pi}$
+![]{https://camo.githubusercontent.com/92d38d547705ea1474852ca5927a13ee44cafab1/68747470733a2f2f696d67732e786b63642e636f6d2f636f6d6963732f7374616e64617264732e706e67}
+
+Broadly, our model can be described as Convolution 1 with kernel size K<sub>1</sub>, hidden layer size H<sub>1</sub>, Convolution 2 with kernel size K<sub>2</sub>, hidden layer size H<sub>2</sub>, two fully connected layers with H<sub>3</sub> and H<sub>4</sub> hidden features, and an output layer. Thus we have 6 interesting hyperparameters (HPs) within the model, not to mention several training HPs, including the learning rate, momentum, and number of epochs. Starting from this set, we have a 9-dimensional space in which to find the best model. Rather than searching this manually, we can ask W&B to select combinations of these 9 HPs and pass them to the model class and training method. 
+
+We add the HPs to the class construction of Net(), as 
+
+```
+class Net(nn.Module):
+    def __init__(self, kern_1 = 5, hidden_dim_1 = 6, kern_2 = 5, hidden_dim_2 = 16, hidden_dim_3 = 120, hidden_dim_4 = 84, output_dim = 10):
+        super(Net, self).__init__()
+        self.conv1 = nn.Conv2d(3, hidden_dim_1, kern_1)
+        self.pool = nn.MaxPool2d(2, 2)
+        self.conv2 = nn.Conv2d(hidden_dim_1, hidden_dim_2, kern_2)
+        self.flat_num = int(np.ceil( (np.ceil( (32 - kern_1) / 2) - kern_2 ) /2 ))
+#         print(self.flat_num)
+        self.fc1 = nn.Linear(hidden_dim_2 * self.flat_num * self.flat_num, hidden_dim_3)
+        self.fc2 = nn.Linear(hidden_dim_3, hidden_dim_4)
+        self.fc3 = nn.Linear(hidden_dim_4, output_dim)
+
+    def forward(self, x):
+        x = self.pool(F.relu(self.conv1(x)))
+        x = self.pool(F.relu(self.conv2(x)))
+        x = x.view(-1, self.num_flat_features(x))
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x
+    
+    def num_flat_features(self, x):
+        size = x.size()[1:]  # all dimensions except the batch dimension
+        num_features = 1
+        for s in size:
+            num_features *= s
+        return num_features
+```
+
+where the `num_flat_features` method is borrowed from the PyTorch NN tutorial as a handy automation of handling dimension. 
+
+
+### Option 1: Call the Sweep from within a Python function, sweep.py
+
+To have W&B select the HPs, I have found it convenient to handle them as dictionaries of configurations. For example, we have a model dictionary that is defined as
+
+```
+m_dic = ["kern_1", "hidden_dim_1", "kern_2", "hidden_dim_2", "hidden_dim_3", "hidden_dim_4"] # Define the HPs given by W&B
+m_configs = {k:wandb.config.get(k,0) for k in m_dic} # Retrieve the HPs from W&B
+m_configs = {**m_configs, 'output_dim': 10} # Manually specify any HPs not part of the sweep
+model = Net(**m_configs).to(device) # Initialise the model, and send it to the GPU
+```
+
+We can do the same for the optimisation HPs
+
+```
+o_dic = ["lr", "momentum"]
+o_configs = {k:wandb.config.get(k,0) for k in o_dic} 
+optimizer = optim.SGD(model.parameters(), **o_configs)
+```
+and finally get the number of epochs with 
+``` 
+for epoch in range(wandb.config.get("n_epochs", 0)): ...
+```
 
 * Incorporate sweep agent in training.py
+
+The main shift is that we now need `main()` to be in charge of running the sweep agent, which calls `train()`. Our `main()` should now consist of 
+
+```
+# Parse the command line
+args = parse_args()
+        
+# Load config YAML
+with open(args.config) as file:
+    sweep_config = yaml.load(file, Loader=yaml.FullLoader)
+        
+# Instantiate WandB sweep ID
+sweep_id = wandb.sweep(sweep_config, entity= "murnanedaniel", project= "edge_classification_sweep")
+    
+# Run WandB weep agent
+wandb.agent(sweep_id, function=train)
+```
+
+### Option 2: Run the Sweep from the command line
+
+**This is strongly suggested** if you intend to run the sweeps in a distributed way (multi-GPU or multi-node).
+
+In this scenario, we hand the HPs to the file by assuming they will be passed at the command line as flags. Thus, we need to include `argparse` flags, such as
+
+```
+def parse_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser('sweep_cli.py')
+    add_arg = parser.add_argument
+    add_arg('--hidden_dim_1', type=int)
+    add_arg('--hidden_dim_2', type=int)
+    add_arg('--hidden_dim_3', type=int)
+    ...
+```
+
+and then build the model/optimiser config dictionaries from these. This is because, to run the sweep, we run
+
+```
+wandb sweep /src/config/sweep_config.yaml
+wandb agent <sweep_ID>
+```
+
+which will call `python src/sweep_cli.py --hidden_dim_1=420 --hidden_dim_2=... etc.`
+
+What is this sweep_config concept? It stores all of the information required for W&B to run the sweep to our specifications. For example, I'm using the following sweep configuration, in a sweep_config.yaml file:
+
+```
+(program: sweep_cli.py )
+method: random
+name: ConvNet Sweep
+parameters:
+    hidden_dim_1: 
+        min: 4 
+        max: 1000
+    kern_1:
+        min: 2
+        max: 8
+    hidden_dim_2: 
+        min: 4 
+        max: 1000
+    kern_2:
+        min: 2
+        max: 8
+    hidden_dim_3: 
+        min: 20 
+        max: 4000
+    hidden_dim_4: 
+        min: 20 
+        max: 1000
+    lr:
+        distribution: log_normal
+        max: -2.3
+        min: -11.5
+        mu: -6.9
+        sigma: 1.5
+    momentum:
+        min: 0.1
+        max: 0.9
+    n_epochs:
+        min: 2
+        max: 10
+```
+
+Note that this will be a "dumb" sweep - it is randomly sampling the HP space. We will make it "smart" later.
+
+
 * Run the sweep on interactive node
+Now, we add a `dvc run` for the sweep. Note that we can't have the same output file as the regular train script, so let's change the model output to `cifar_net_sweep.pth`.
+
 * Submit it as batch job... debug this
 
 ### Update the Dataset
@@ -258,6 +406,7 @@ Broadly, our model can be described as a convolution with kernel size $e^{i\pi}$
 * Add some transformations / augmentations to prepare.py
 * Run this into the pipeline
 * Show when this runs, and when it doesn't need to
+
 
 
 

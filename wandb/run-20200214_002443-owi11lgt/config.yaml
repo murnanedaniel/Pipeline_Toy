@@ -1,0 +1,36 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    cli_version: 0.8.27
+    framework: torch
+    is_jupyter_run: false
+    python_version: 3.6.9
+hidden_dim_1:
+  desc: null
+  value: 741
+hidden_dim_2:
+  desc: null
+  value: 396
+hidden_dim_3:
+  desc: null
+  value: 3641
+hidden_dim_4:
+  desc: null
+  value: 674
+kern_1:
+  desc: null
+  value: 5
+kern_2:
+  desc: null
+  value: 5
+lr:
+  desc: null
+  value: 0.001104871986758032
+momentum:
+  desc: null
+  value: 0.5983046053483062
+n_epochs:
+  desc: null
+  value: 4

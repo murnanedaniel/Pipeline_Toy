@@ -1,0 +1,571 @@
+diff --git a/.ipynb_checkpoints/README-checkpoint.md b/.ipynb_checkpoints/README-checkpoint.md
+index 3db728f..c4e0143 100644
+--- a/.ipynb_checkpoints/README-checkpoint.md
++++ b/.ipynb_checkpoints/README-checkpoint.md
+@@ -247,10 +247,124 @@ You can see my output with https://app.wandb.ai/murnanedaniel/convnet-toy
+ 
+ ## Hyperparameter Optimisation
+ 
+-Broadly, our model can be described as a convolution with kernel size $e^{i\pi}$
++Broadly, our model can be described as Convolution 1 with kernel size K<sub>1</sub>, hidden layer size H<sub>1</sub>, Convolution 2 with kernel size K<sub>2</sub>, hidden layer size H<sub>2</sub>, two fully connected layers with H<sub>3</sub> and H<sub>4</sub> hidden features, and an output layer. Thus we have 6 interesting hyperparameters (HPs) within the model, not to mention several training HPs, including the learning rate, momentum, and number of epochs. Starting from this set, we have a 9-dimensional space in which to find the best model. Rather than searching this manually, we can ask W&B to select combinations of these 9 HPs and pass them to the model class and training method. 
++
++We add the HPs to the class construction of Net(), as 
++
++```
++class Net(nn.Module):
++    def __init__(self, kern_1 = 5, hidden_dim_1 = 6, kern_2 = 5, hidden_dim_2 = 16, hidden_dim_3 = 120, hidden_dim_4 = 84, output_dim = 10):
++        super(Net, self).__init__()
++        self.conv1 = nn.Conv2d(3, hidden_dim_1, kern_1)
++        self.pool = nn.MaxPool2d(2, 2)
++        self.conv2 = nn.Conv2d(hidden_dim_1, hidden_dim_2, kern_2)
++        self.fc1 = nn.Linear(hidden_dim_2 * kern_1 * kern_2, hidden_dim_3)
++        self.fc2 = nn.Linear(hidden_dim_3, hidden_dim_4)
++        self.fc3 = nn.Linear(hidden_dim_4, output_dim)
++
++    def forward(self, x):
++        x = self.pool(F.relu(self.conv1(x)))
++        x = self.pool(F.relu(self.conv2(x)))
++        x = x.view(-1, self.num_flat_features(x))
++        x = F.relu(self.fc1(x))
++        x = F.relu(self.fc2(x))
++        x = self.fc3(x)
++        return x
++    
++    def num_flat_features(self, x):
++        size = x.size()[1:]  # all dimensions except the batch dimension
++        num_features = 1
++        for s in size:
++            num_features *= s
++        return num_features
++```
++
++where the `num_flat_features` method is borrowed from the PyTorch NN tutorial as a handy automation of handling dimension. 
++
++To have W&B select the HPs, I have found it convenient to handle them as dictionaries of configurations. For example, we have a model dictionary that is defined as
++
++```
++m_dic = ["kern_1", "hidden_dim_1", "kern_2", "hidden_dim_2", "hidden_dim_3", "hidden_dim_4"] # Define the HPs given by W&B
++m_configs = {k:wandb.config.get(k,0) for k in m_dic} # Retrieve the HPs from W&B
++m_configs = {**m_configs, 'output_dim': 10} # Manually specify any HPs not part of the sweep
++model = Net(**m_configs).to(device) # Initialise the model, and send it to the GPU
++```
++
++We can do the same for the optimisation HPs
++
++```
++o_dic = ["lr", "momentum"]
++o_configs = {k:wandb.config.get(k,0) for k in o_dic} 
++optimizer = optim.SGD(model.parameters(), **o_configs)
++```
++and finally get the number of epochs with 
++``` 
++for epoch in range(wandb.config.get("n_epochs", 0)): ...
++```
+ 
+ * Incorporate sweep agent in training.py
++
++The main shift is that we now need `main()` to be in charge of running the sweep agent, which calls `train()`. Our `main()` should now consist of 
++
++```
++# Parse the command line
++args = parse_args()
++        
++# Load config YAML
++with open(args.config) as file:
++    sweep_config = yaml.load(file, Loader=yaml.FullLoader)
++        
++# Instantiate WandB sweep ID
++sweep_id = wandb.sweep(sweep_config, entity= "murnanedaniel", project= "edge_classification_sweep")
++    
++# Run WandB weep agent
++wandb.agent(sweep_id, function=train)
++```
++
++What is this sweep_config concept? It stores all of the information required for W&B to run the sweep to our specifications. For example, I'm using the following sweep configuration, in a sweep_config.yaml file:
++
++```
++method: random
++name: ConvNet Sweep
++parameters:
++    hidden_dim_1: 
++        min: 4 
++        max: 1000
++    kern_1:
++        min: 2
++        max: 8
++    hidden_dim_2: 
++        min: 4 
++        max: 1000
++    kern_2:
++        min: 2
++        max: 8
++    hidden_dim_3: 
++        min: 20 
++        max: 4000
++    hidden_dim_4: 
++        min: 20 
++        max: 1000
++    lr:
++        distribution: log_normal
++        max: -2.3
++        min: -11.5
++        mu: -6.9
++        sigma: 1.5
++    momentum:
++        min: 0.1
++        max: 0.9
++    n_epochs:
++        min: 2
++        max: 10
++```
++
++Note that this will be a "dumb" sweep - it is randomly sampling the HP space. We will make it "smart" later.
++
++
+ * Run the sweep on interactive node
++Now, we add a `dvc run` for the sweep. Note that we can't have the same output file as the regular train script, so let's change the model output to `cifar_net_sweep.pth`.
++
+ * Submit it as batch job... debug this
+ 
+ ### Update the Dataset
+diff --git a/README.md b/README.md
+index 3db728f..c4e0143 100644
+--- a/README.md
++++ b/README.md
+@@ -247,10 +247,124 @@ You can see my output with https://app.wandb.ai/murnanedaniel/convnet-toy
+ 
+ ## Hyperparameter Optimisation
+ 
+-Broadly, our model can be described as a convolution with kernel size $e^{i\pi}$
++Broadly, our model can be described as Convolution 1 with kernel size K<sub>1</sub>, hidden layer size H<sub>1</sub>, Convolution 2 with kernel size K<sub>2</sub>, hidden layer size H<sub>2</sub>, two fully connected layers with H<sub>3</sub> and H<sub>4</sub> hidden features, and an output layer. Thus we have 6 interesting hyperparameters (HPs) within the model, not to mention several training HPs, including the learning rate, momentum, and number of epochs. Starting from this set, we have a 9-dimensional space in which to find the best model. Rather than searching this manually, we can ask W&B to select combinations of these 9 HPs and pass them to the model class and training method. 
++
++We add the HPs to the class construction of Net(), as 
++
++```
++class Net(nn.Module):
++    def __init__(self, kern_1 = 5, hidden_dim_1 = 6, kern_2 = 5, hidden_dim_2 = 16, hidden_dim_3 = 120, hidden_dim_4 = 84, output_dim = 10):
++        super(Net, self).__init__()
++        self.conv1 = nn.Conv2d(3, hidden_dim_1, kern_1)
++        self.pool = nn.MaxPool2d(2, 2)
++        self.conv2 = nn.Conv2d(hidden_dim_1, hidden_dim_2, kern_2)
++        self.fc1 = nn.Linear(hidden_dim_2 * kern_1 * kern_2, hidden_dim_3)
++        self.fc2 = nn.Linear(hidden_dim_3, hidden_dim_4)
++        self.fc3 = nn.Linear(hidden_dim_4, output_dim)
++
++    def forward(self, x):
++        x = self.pool(F.relu(self.conv1(x)))
++        x = self.pool(F.relu(self.conv2(x)))
++        x = x.view(-1, self.num_flat_features(x))
++        x = F.relu(self.fc1(x))
++        x = F.relu(self.fc2(x))
++        x = self.fc3(x)
++        return x
++    
++    def num_flat_features(self, x):
++        size = x.size()[1:]  # all dimensions except the batch dimension
++        num_features = 1
++        for s in size:
++            num_features *= s
++        return num_features
++```
++
++where the `num_flat_features` method is borrowed from the PyTorch NN tutorial as a handy automation of handling dimension. 
++
++To have W&B select the HPs, I have found it convenient to handle them as dictionaries of configurations. For example, we have a model dictionary that is defined as
++
++```
++m_dic = ["kern_1", "hidden_dim_1", "kern_2", "hidden_dim_2", "hidden_dim_3", "hidden_dim_4"] # Define the HPs given by W&B
++m_configs = {k:wandb.config.get(k,0) for k in m_dic} # Retrieve the HPs from W&B
++m_configs = {**m_configs, 'output_dim': 10} # Manually specify any HPs not part of the sweep
++model = Net(**m_configs).to(device) # Initialise the model, and send it to the GPU
++```
++
++We can do the same for the optimisation HPs
++
++```
++o_dic = ["lr", "momentum"]
++o_configs = {k:wandb.config.get(k,0) for k in o_dic} 
++optimizer = optim.SGD(model.parameters(), **o_configs)
++```
++and finally get the number of epochs with 
++``` 
++for epoch in range(wandb.config.get("n_epochs", 0)): ...
++```
+ 
+ * Incorporate sweep agent in training.py
++
++The main shift is that we now need `main()` to be in charge of running the sweep agent, which calls `train()`. Our `main()` should now consist of 
++
++```
++# Parse the command line
++args = parse_args()
++        
++# Load config YAML
++with open(args.config) as file:
++    sweep_config = yaml.load(file, Loader=yaml.FullLoader)
++        
++# Instantiate WandB sweep ID
++sweep_id = wandb.sweep(sweep_config, entity= "murnanedaniel", project= "edge_classification_sweep")
++    
++# Run WandB weep agent
++wandb.agent(sweep_id, function=train)
++```
++
++What is this sweep_config concept? It stores all of the information required for W&B to run the sweep to our specifications. For example, I'm using the following sweep configuration, in a sweep_config.yaml file:
++
++```
++method: random
++name: ConvNet Sweep
++parameters:
++    hidden_dim_1: 
++        min: 4 
++        max: 1000
++    kern_1:
++        min: 2
++        max: 8
++    hidden_dim_2: 
++        min: 4 
++        max: 1000
++    kern_2:
++        min: 2
++        max: 8
++    hidden_dim_3: 
++        min: 20 
++        max: 4000
++    hidden_dim_4: 
++        min: 20 
++        max: 1000
++    lr:
++        distribution: log_normal
++        max: -2.3
++        min: -11.5
++        mu: -6.9
++        sigma: 1.5
++    momentum:
++        min: 0.1
++        max: 0.9
++    n_epochs:
++        min: 2
++        max: 10
++```
++
++Note that this will be a "dumb" sweep - it is randomly sampling the HP space. We will make it "smart" later.
++
++
+ * Run the sweep on interactive node
++Now, we add a `dvc run` for the sweep. Note that we can't have the same output file as the regular train script, so let's change the model output to `cifar_net_sweep.pth`.
++
+ * Submit it as batch job... debug this
+ 
+ ### Update the Dataset
+diff --git a/src/models/.ipynb_checkpoints/convNet-checkpoint.py b/src/models/.ipynb_checkpoints/convNet-checkpoint.py
+index bfb97c2..00e9df9 100644
+--- a/src/models/.ipynb_checkpoints/convNet-checkpoint.py
++++ b/src/models/.ipynb_checkpoints/convNet-checkpoint.py
+@@ -6,20 +6,27 @@ import matplotlib.pyplot as plt
+ import numpy as np
+ 
+ class Net(nn.Module):
+-    def __init__(self):
++    def __init__(self, kern_1 = 5, hidden_dim_1 = 6, kern_2 = 5, hidden_dim_2 = 16, hidden_dim_3 = 120, hidden_dim_4 = 84, output_dim = 10):
+         super(Net, self).__init__()
+-        self.conv1 = nn.Conv2d(3, 100, 5)
++        self.conv1 = nn.Conv2d(3, hidden_dim_1, kern_1)
+         self.pool = nn.MaxPool2d(2, 2)
+-        self.conv2 = nn.Conv2d(100, 300, 5)
+-        self.fc1 = nn.Linear(300 * 5 * 5, 1000)
+-        self.fc2 = nn.Linear(1000, 84)
+-        self.fc3 = nn.Linear(84, 10)
++        self.conv2 = nn.Conv2d(hidden_dim_1, hidden_dim_2, kern_2)
++        self.fc1 = nn.Linear(hidden_dim_2 * kern_2 * kern_2, hidden_dim_3)
++        self.fc2 = nn.Linear(hidden_dim_3, hidden_dim_4)
++        self.fc3 = nn.Linear(hidden_dim_4, output_dim)
+ 
+     def forward(self, x):
+         x = self.pool(F.relu(self.conv1(x)))
+         x = self.pool(F.relu(self.conv2(x)))
+-        x = x.view(-1, 300 * 5 * 5)
++        x = x.view(-1, self.num_flat_features(x))
+         x = F.relu(self.fc1(x))
+         x = F.relu(self.fc2(x))
+         x = self.fc3(x)
+-        return x
+\ No newline at end of file
++        return x
++    
++    def num_flat_features(self, x):
++        size = x.size()[1:]  # all dimensions except the batch dimension
++        num_features = 1
++        for s in size:
++            num_features *= s
++        return num_features
+\ No newline at end of file
+diff --git a/src/models/__pycache__/convNet.cpython-36.pyc b/src/models/__pycache__/convNet.cpython-36.pyc
+index b8fc4a1..6f1659d 100644
+Binary files a/src/models/__pycache__/convNet.cpython-36.pyc and b/src/models/__pycache__/convNet.cpython-36.pyc differ
+diff --git a/src/models/convNet.py b/src/models/convNet.py
+index bfb97c2..00e9df9 100644
+--- a/src/models/convNet.py
++++ b/src/models/convNet.py
+@@ -6,20 +6,27 @@ import matplotlib.pyplot as plt
+ import numpy as np
+ 
+ class Net(nn.Module):
+-    def __init__(self):
++    def __init__(self, kern_1 = 5, hidden_dim_1 = 6, kern_2 = 5, hidden_dim_2 = 16, hidden_dim_3 = 120, hidden_dim_4 = 84, output_dim = 10):
+         super(Net, self).__init__()
+-        self.conv1 = nn.Conv2d(3, 100, 5)
++        self.conv1 = nn.Conv2d(3, hidden_dim_1, kern_1)
+         self.pool = nn.MaxPool2d(2, 2)
+-        self.conv2 = nn.Conv2d(100, 300, 5)
+-        self.fc1 = nn.Linear(300 * 5 * 5, 1000)
+-        self.fc2 = nn.Linear(1000, 84)
+-        self.fc3 = nn.Linear(84, 10)
++        self.conv2 = nn.Conv2d(hidden_dim_1, hidden_dim_2, kern_2)
++        self.fc1 = nn.Linear(hidden_dim_2 * kern_2 * kern_2, hidden_dim_3)
++        self.fc2 = nn.Linear(hidden_dim_3, hidden_dim_4)
++        self.fc3 = nn.Linear(hidden_dim_4, output_dim)
+ 
+     def forward(self, x):
+         x = self.pool(F.relu(self.conv1(x)))
+         x = self.pool(F.relu(self.conv2(x)))
+-        x = x.view(-1, 300 * 5 * 5)
++        x = x.view(-1, self.num_flat_features(x))
+         x = F.relu(self.fc1(x))
+         x = F.relu(self.fc2(x))
+         x = self.fc3(x)
+-        return x
+\ No newline at end of file
++        return x
++    
++    def num_flat_features(self, x):
++        size = x.size()[1:]  # all dimensions except the batch dimension
++        num_features = 1
++        for s in size:
++            num_features *= s
++        return num_features
+\ No newline at end of file
+diff --git a/wandb/debug.log b/wandb/debug.log
+index 56765b2..0f02547 100644
+--- a/wandb/debug.log
++++ b/wandb/debug.log
+@@ -1,187 +1,22 @@
+-2020-02-13 10:06:18,389 DEBUG   MainThread:10043 [wandb_config.py:_load_defaults():119] no defaults not found in config-defaults.yaml
+-2020-02-13 10:06:18,397 DEBUG   MainThread:10043 [meta.py:setup():94] code probe starting
+-2020-02-13 10:06:18,398 DEBUG   MainThread:10043 [meta.py:_setup_code_git():49] probe for git information
+-2020-02-13 10:06:18,400 DEBUG   MainThread:10043 [cmd.py:execute():728] Popen(['git', 'cat-file', '--batch-check'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=<valid stream>)
+-2020-02-13 10:06:18,413 DEBUG   MainThread:10043 [cmd.py:execute():728] Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
+-2020-02-13 10:06:18,420 DEBUG   MainThread:10043 [meta.py:_setup_code_program():58] scan for untracked program
+-2020-02-13 10:06:18,421 DEBUG   MainThread:10043 [cmd.py:execute():728] Popen(['git', 'status', '--porcelain', '--untracked-files'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
+-2020-02-13 10:06:18,434 DEBUG   MainThread:10043 [meta.py:setup():116] code probe done
+-2020-02-13 10:06:18,462 DEBUG   MainThread:10043 [run_manager.py:__init__():536] Initialized sync for convnet-toy/42qjbxk3
+-2020-02-13 10:06:18,473 INFO    MainThread:10043 [run_manager.py:wrap_existing_process():1134] wrapping existing process 10017
+-2020-02-13 10:06:18,474 WARNING MainThread:10043 [io_wrap.py:register():104] SIGWINCH handler was not None: <Handlers.SIG_DFL: 0>
+-2020-02-13 10:06:18,479 DEBUG   MainThread:10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): pypi.org:443
+-2020-02-13 10:06:18,500 DEBUG   MainThread:10043 [connectionpool.py:_make_request():437] https://pypi.org:443 "GET /pypi/wandb/json HTTP/1.1" 200 41171
+-2020-02-13 10:06:18,508 INFO    MainThread:10043 [run_manager.py:init_run():919] system metrics and metadata threads started
+-2020-02-13 10:06:18,508 INFO    MainThread:10043 [run_manager.py:init_run():953] upserting run before process can begin, waiting at most 10 seconds
+-2020-02-13 10:06:18,518 DEBUG   Thread-14 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:06:18,742 DEBUG   Thread-14 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 545
+-2020-02-13 10:06:18,752 INFO    Thread-14 :10043 [run_manager.py:_upsert_run():1038] saving patches
+-2020-02-13 10:06:18,754 DEBUG   Thread-14 :10043 [cmd.py:execute():728] Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
+-2020-02-13 10:06:18,765 DEBUG   Thread-14 :10043 [cmd.py:execute():728] Popen(['git', 'diff', '--cached', '--abbrev=40', '--full-index', '--raw'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
+-2020-02-13 10:06:18,773 DEBUG   Thread-14 :10043 [cmd.py:execute():728] Popen(['git', 'diff', '--abbrev=40', '--full-index', '--raw'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
+-2020-02-13 10:06:18,803 DEBUG   Thread-14 :10043 [cmd.py:execute():728] Popen(['git', 'version'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
+-2020-02-13 10:06:18,847 DEBUG   Thread-14 :10043 [cmd.py:execute():728] Popen(['git', 'merge-base', 'HEAD', 'd48619a95cbad5f2b6a915b0a27b2bbb1c8abe89'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
+-2020-02-13 10:06:18,854 INFO    Thread-14 :10043 [run_manager.py:_upsert_run():1042] saving pip packages
+-2020-02-13 10:06:18,855 INFO    Thread-14 :10043 [run_manager.py:_upsert_run():1044] initializing streaming files api
+-2020-02-13 10:06:18,856 INFO    Thread-14 :10043 [run_manager.py:_upsert_run():1051] unblocking file change observer, beginning sync with W&B servers
+-2020-02-13 10:06:18,856 INFO    MainThread:10043 [run_manager.py:wrap_existing_process():1151] informing user process we are ready to proceed
+-2020-02-13 10:06:18,866 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:06:18,868 INFO    MainThread:10043 [run_manager.py:_sync_etc():1258] entering loop for messages from user process
+-2020-02-13 10:06:19,006 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:06:19,396 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/config.yaml
+-2020-02-13 10:06:19,411 DEBUG   Thread-3  :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:06:19,680 DEBUG   Thread-3  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 593
+-2020-02-13 10:06:19,683 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:06:19,683 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/requirements.txt
+-2020-02-13 10:06:19,683 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:06:19,684 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/diff.patch
+-2020-02-13 10:06:20,881 DEBUG   Thread-7  :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:06:21,119 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:06:21,489 DEBUG   Thread-16 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:06:21,647 DEBUG   Thread-16 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 812
+-2020-02-13 10:06:21,658 DEBUG   Thread-16 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): storage.googleapis.com:443
+-2020-02-13 10:06:22,075 DEBUG   Thread-16 :10043 [connectionpool.py:_make_request():437] https://storage.googleapis.com:443 "PUT /wandb-production.appspot.com/murnanedaniel/convnet-toy/42qjbxk3/___batch_archive_1.tgz?Expires=1581617241&GoogleAccessId=gorilla-cloud-storage%40wandb-production.iam.gserviceaccount.com&Signature=dzPIHWcS6AizFfqhUPNtyGWFOCSTgksQjR1e52UZ0%2Fh%2BkZeYtmNNFnmEjOEg8bKRpZHHbmtgwHHqtoF6MOLIdLQj2y2dXnOjDvsLQ5hwb9ypN8%2B%2BQ2KmkK%2F%2B%2FflbFhhifzz2s536p16g3A6C06IFw3L20hJBBP6Z5FYZQRf%2BcxZPFZ2sfPyxTHC64JFmwU9ftq1WB2rtWz7b07xts0qDtUXf2IxTwJek7WJI593pvnCJPV9Q369KZP%2FZEUL%2FtEZaty2lXm50vrUkHzcd9ZgRAQdQ3bZbaTq%2FAzz9xq4ew%2B7YMC1FKKyUfAFGGrECCUjt1tBDkjhFjxWJEibRzSyOzA%3D%3D HTTP/1.1" 200 0
+-2020-02-13 10:06:24,420 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-summary.json
+-2020-02-13 10:06:24,422 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/media/graph/graph_0_summary_00d64003.graph.json
+-2020-02-13 10:06:24,422 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/media/graph
+-2020-02-13 10:06:24,423 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/media
+-2020-02-13 10:06:24,566 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:06:27,404 DEBUG   Thread-17 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:06:27,548 DEBUG   Thread-17 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 856
+-2020-02-13 10:06:27,557 DEBUG   Thread-17 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): storage.googleapis.com:443
+-2020-02-13 10:06:27,907 DEBUG   Thread-17 :10043 [connectionpool.py:_make_request():437] https://storage.googleapis.com:443 "PUT /wandb-production.appspot.com/murnanedaniel/convnet-toy/42qjbxk3/media/graph/graph_0_summary_00d64003.graph.json?Expires=1581617247&GoogleAccessId=gorilla-cloud-storage%40wandb-production.iam.gserviceaccount.com&Signature=mZ%2Byq1VW9Yn6jcqOBxEXHBquUkAX73mwCHlSntf48UOWZJ416%2BZzR7Oji4ffZCkG1BY5PsOUKxglfDCqtzxKE7%2F1ieLbXfwSGhlu%2BQzomZ20AyqVyqXfsLtvoSQ8lj4eeYkW7HpwYl1yv9gbvo81NGfdeFUBvfV8MSjtGWLE7JKyxdEKak4TXBke9Ufe%2BrLq5uAzXHvsVGBQf61QAOnTULhLIBlFXPA2xI5J2DBpo761ltqAz8NRQYLFiLwgENqG0vQB2a6kodBR3oLWbUWT7cZ%2B4dXT5bZxVTIr6E6vS7xH%2BcxqwtB2Lr4cIrTZyLOMR3L9z%2B%2Bcvhvos4Ne4eyTFA%3D%3D HTTP/1.1" 200 0
+-2020-02-13 10:06:29,944 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:06:30,424 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:06:34,015 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:06:34,149 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:06:35,427 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:06:36,259 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:06:36,427 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:06:42,413 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:06:42,431 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:06:47,435 INFO    Thread-3  :10043 [run_manager.py:_on_file_created():672] file/dir created: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-events.jsonl
+-2020-02-13 10:06:47,675 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:06:48,435 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:06:49,156 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:06:49,302 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:06:50,522 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:06:51,437 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:06:54,715 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:06:55,439 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:00,959 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:07:01,443 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:04,311 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:07:04,450 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:07:06,927 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:07:07,447 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:07:07,448 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-summary.json
+-2020-02-13 10:07:07,448 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:07,448 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-history.jsonl
+-2020-02-13 10:07:09,721 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:07:13,228 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:07:13,451 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:17,453 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-events.jsonl
+-2020-02-13 10:07:17,656 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:07:19,457 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:07:19,460 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:19,605 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:07:23,463 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:07:25,464 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:31,844 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:07:32,468 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:34,613 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:07:34,753 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:07:38,473 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:39,474 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:07:44,202 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:07:44,478 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:47,479 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-events.jsonl
+-2020-02-13 10:07:49,762 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:07:49,905 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:07:50,481 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-summary.json
+-2020-02-13 10:07:50,482 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:50,482 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-history.jsonl
+-2020-02-13 10:07:55,486 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:07:56,486 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:07:56,621 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:08:03,491 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:04,913 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:08:05,086 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:08:09,052 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:08:09,494 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:11,495 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:08:15,499 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:17,500 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-events.jsonl
+-2020-02-13 10:08:20,093 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:08:20,236 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:08:21,451 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:08:21,502 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:27,506 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:08:27,506 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:33,690 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:08:34,511 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-summary.json
+-2020-02-13 10:08:34,511 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:34,512 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-history.jsonl
+-2020-02-13 10:08:35,243 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:08:35,388 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:08:40,515 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:43,517 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:08:46,204 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:08:46,518 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:47,519 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-events.jsonl
+-2020-02-13 10:08:50,397 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:08:50,541 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:08:52,522 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:58,526 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:08:58,619 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:08:59,527 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:09:05,532 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:09:05,550 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:09:05,701 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:09:11,071 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:09:11,537 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:09:15,538 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:09:17,539 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-history.jsonl
+-2020-02-13 10:09:17,539 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-summary.json
+-2020-02-13 10:09:17,540 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:09:17,540 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-events.jsonl
+-2020-02-13 10:09:20,709 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:09:20,857 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:09:23,378 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:09:23,543 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:09:29,546 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:09:31,548 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:09:35,734 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:09:35,864 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:09:36,019 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:09:36,551 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:09:42,556 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:09:47,559 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:09:47,560 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-events.jsonl
+-2020-02-13 10:09:47,771 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:09:48,560 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:09:51,026 DEBUG   Thread-15 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:09:51,170 DEBUG   Thread-15 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 46
+-2020-02-13 10:09:54,564 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:10:00,394 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:10:00,568 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-summary.json
+-2020-02-13 10:10:00,568 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/output.log
+-2020-02-13 10:10:00,568 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-history.jsonl
+-2020-02-13 10:10:01,100 INFO    MainThread:10043 [run_manager.py:_sync_etc():1281] received message from user process: {"exitcode": 0}
+-2020-02-13 10:10:01,101 INFO    MainThread:10043 [run_manager.py:_sync_etc():1367] closing log streams and sending exitcode to W&B
+-2020-02-13 10:10:01,101 INFO    MainThread:10043 [run_manager.py:shutdown():1058] shutting down system stats and metadata service
+-2020-02-13 10:10:01,568 INFO    Thread-3  :10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-events.jsonl
+-2020-02-13 10:10:01,770 INFO    MainThread:10043 [run_manager.py:shutdown():1070] stopping streaming files and file change observer
+-2020-02-13 10:10:02,570 INFO    MainThread:10043 [run_manager.py:_on_file_modified():683] file/dir modified: /global/u2/d/danieltm/Pipeline_Toy/wandb/run-20200213_180617-42qjbxk3/wandb-metadata.json
+-2020-02-13 10:10:02,580 DEBUG   MainThread:10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:10:02,838 DEBUG   MainThread:10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 593
+-2020-02-13 10:10:03,508 DEBUG   Thread-20 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
+-2020-02-13 10:10:03,665 DEBUG   Thread-20 :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 806
+-2020-02-13 10:10:03,672 DEBUG   Thread-20 :10043 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): storage.googleapis.com:443
+-2020-02-13 10:10:04,019 DEBUG   Thread-20 :10043 [connectionpool.py:_make_request():437] https://storage.googleapis.com:443 "PUT /wandb-production.appspot.com/murnanedaniel/convnet-toy/42qjbxk3/___batch_archive_2.tgz?Expires=1581617463&GoogleAccessId=gorilla-cloud-storage%40wandb-production.iam.gserviceaccount.com&Signature=WXO5rCGm2GNW8%2BgkwgOJS2E%2F%2B7GLaetdbMHTsebet9rYJruLi%2F6pn6LINsJA%2Bn9Fh8YjYSvSVbgYFKlAHtDHOpSCFBzl4nklMLw0nB1%2F73b1NLiFXpztkjvz45JROLM0LUniCCqrzrkkvY8%2FBCFkbDPnbBzqmJhOnrdRsxNec2YEeQLEuDTQ%2BDxF5zeVmwE3sFTi8xwGOtMPwm0SWCWuQJvU8RG8ALdBKMdNBJTe3pUnsRrYDVDZrgvMYJccjlSsHn8zayu%2FDiZx7so787P8rKn0Z0CYaJsKqHjx6LKR0qkaU0ofKhWLJe4Ff8x0O6IqPwSoBdWpIwi9BjIB7QDWmw%3D%3D HTTP/1.1" 200 0
+-2020-02-13 10:10:04,855 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 311
+-2020-02-13 10:10:04,987 DEBUG   Thread-7  :10043 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /files/murnanedaniel/convnet-toy/42qjbxk3/file_stream HTTP/1.1" 200 308
+-2020-02-13 10:10:04,988 INFO    MainThread:10043 [run_manager.py:_sync_etc():1386] rendering summary
+-2020-02-13 10:10:04,991 INFO    MainThread:10043 [run_manager.py:_sync_etc():1419] syncing files to cloud storage
+-2020-02-13 10:10:05,745 INFO    MainThread:10043 [run_manager.py:_sync_etc():1434] syncing complete: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/42qjbxk3
+-2020-02-13 10:10:05,745 INFO    MainThread:10043 [42qjbxk3:run_manager.py:_sync_etc():1434] syncing complete: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/42qjbxk3
++2020-02-13 12:01:33,892 DEBUG   MainThread:30317 [wandb_config.py:_load_defaults():119] no defaults not found in config-defaults.yaml
++2020-02-13 12:01:33,905 DEBUG   MainThread:30317 [meta.py:setup():94] code probe starting
++2020-02-13 12:01:33,905 DEBUG   MainThread:30317 [meta.py:_setup_code_git():49] probe for git information
++2020-02-13 12:01:33,907 DEBUG   MainThread:30317 [cmd.py:execute():728] Popen(['git', 'cat-file', '--batch-check'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=<valid stream>)
++2020-02-13 12:01:33,917 DEBUG   MainThread:30317 [cmd.py:execute():728] Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
++2020-02-13 12:01:33,923 DEBUG   MainThread:30317 [meta.py:_setup_code_program():58] scan for untracked program
++2020-02-13 12:01:33,924 DEBUG   MainThread:30317 [cmd.py:execute():728] Popen(['git', 'status', '--porcelain', '--untracked-files'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
++2020-02-13 12:01:33,945 DEBUG   MainThread:30317 [meta.py:setup():116] code probe done
++2020-02-13 12:01:33,972 DEBUG   MainThread:30317 [run_manager.py:__init__():536] Initialized sync for edge_classification_sweep/wlwik2az
++2020-02-13 12:01:33,974 INFO    MainThread:30317 [run_manager.py:wrap_existing_process():1134] wrapping existing process 30300
++2020-02-13 12:01:33,975 WARNING MainThread:30317 [io_wrap.py:register():104] SIGWINCH handler was not None: <Handlers.SIG_DFL: 0>
++2020-02-13 12:01:33,980 DEBUG   MainThread:30317 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): pypi.org:443
++2020-02-13 12:01:34,000 DEBUG   MainThread:30317 [connectionpool.py:_make_request():437] https://pypi.org:443 "GET /pypi/wandb/json HTTP/1.1" 200 41171
++2020-02-13 12:01:34,007 INFO    MainThread:30317 [run_manager.py:init_run():919] system metrics and metadata threads started
++2020-02-13 12:01:34,007 INFO    MainThread:30317 [run_manager.py:init_run():953] upserting run before process can begin, waiting at most 10 seconds
++2020-02-13 12:01:34,017 DEBUG   Thread-14 :30317 [connectionpool.py:_new_conn():959] Starting new HTTPS connection (1): api.wandb.ai:443
++2020-02-13 12:01:34,183 DEBUG   Thread-14 :30317 [connectionpool.py:_make_request():437] https://api.wandb.ai:443 "POST /graphql HTTP/1.1" 200 1069
++2020-02-13 12:01:34,191 INFO    Thread-14 :30317 [run_manager.py:_upsert_run():1038] saving patches
++2020-02-13 12:01:34,191 DEBUG   Thread-14 :30317 [cmd.py:execute():728] Popen(['git', 'rev-parse', '--show-toplevel'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
++2020-02-13 12:01:34,200 DEBUG   Thread-14 :30317 [cmd.py:execute():728] Popen(['git', 'diff', '--cached', '--abbrev=40', '--full-index', '--raw'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
++2020-02-13 12:01:34,209 DEBUG   Thread-14 :30317 [cmd.py:execute():728] Popen(['git', 'diff', '--abbrev=40', '--full-index', '--raw'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
++2020-02-13 12:01:34,217 DEBUG   Thread-14 :30317 [cmd.py:execute():728] Popen(['git', 'version'], cwd=/global/u2/d/danieltm/Pipeline_Toy, universal_newlines=False, shell=None, istream=None)
+diff --git a/wandb/settings b/wandb/settings
+index e14c479..54c04d0 100644
+--- a/wandb/settings
++++ b/wandb/settings
+@@ -1,4 +1,4 @@
+ [default]
+-project = convnet-toy
++project = edge_classification_sweep
+ entity = murnanedaniel
+ 

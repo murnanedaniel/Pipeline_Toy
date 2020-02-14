@@ -1,0 +1,16 @@
+Using  cuda
+Process Process-1:
+Traceback (most recent call last):
+  File "/usr/common/software/pytorch/v1.2.0-gpu/lib/python3.6/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/common/software/pytorch/v1.2.0-gpu/lib/python3.6/multiprocessing/process.py", line 93, in run
+    self._target(*self._args, **self._kwargs)
+  File "/global/homes/d/danieltm/.local/cori/pytorchv1.2.0-gpu/lib/python3.6/site-packages/wandb/wandb_agent.py", line 64, in _start
+    function()
+  File "src/sweep.py", line 66, in train
+    model = Net(**m_configs).to(device) # Initialise the model, and send it to the GPU
+  File "/global/u2/d/danieltm/Pipeline_Toy/src/models/convNet.py", line 15, in __init__
+    self.fc1 = nn.Linear(self.flat_num, hidden_dim_3)
+  File "/usr/common/software/pytorch/v1.2.0-gpu/lib/python3.6/site-packages/torch/nn/modules/linear.py", line 72, in __init__
+    self.weight = Parameter(torch.Tensor(out_features, in_features))
+TypeError: new(): argument 'size' must be tuple of ints, but found element of type numpy.float64 at pos 2

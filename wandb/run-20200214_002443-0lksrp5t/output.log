@@ -1,0 +1,30 @@
+Using  cuda
+[1,  2000] loss: 2.085
+[1,  4000] loss: 1.715
+[1,  6000] loss: 1.563
+[1,  8000] loss: 1.473
+[1, 10000] loss: 1.405
+[1, 12000] loss: 1.340
+Accuracy of the network on the 10000 test images: 53 %
+[2,  2000] loss: 1.254
+[2,  4000] loss: 1.186
+[2,  6000] loss: 1.173
+[2,  8000] loss: 1.121
+[2, 10000] loss: 1.099
+[2, 12000] loss: 1.061
+Accuracy of the network on the 10000 test images: 62 %
+[3,  2000] loss: 0.956
+[3,  4000] loss: 0.960
+[3,  6000] loss: 0.955
+[3,  8000] loss: 0.906
+[3, 10000] loss: 0.877
+[3, 12000] loss: 0.871
+Accuracy of the network on the 10000 test images: 68 %
+[4,  2000] loss: 0.738
+[4,  4000] loss: 0.757
+[4,  6000] loss: 0.736
+[4,  8000] loss: 0.753
+[4, 10000] loss: 0.716
+[4, 12000] loss: 0.710
+Accuracy of the network on the 10000 test images: 70 %
+Finished Training

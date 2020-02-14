@@ -1,0 +1,13 @@
+Using  cuda
+Traceback (most recent call last):
+  File "src/sweep_test.py", line 139, in <module>
+    main()
+  File "src/sweep_test.py", line 80, in main
+    model = Net(**m_configs).to(device) # Initialise the model, and send it to the GPU
+  File "/global/u2/d/danieltm/Pipeline_Toy/src/models/convNet.py", line 11, in __init__
+    self.conv1 = nn.Conv2d(3, hidden_dim_1, kern_1)
+  File "/usr/common/software/pytorch/v1.2.0-gpu/lib/python3.6/site-packages/torch/nn/modules/conv.py", line 330, in __init__
+    False, _pair(0), groups, bias, padding_mode)
+  File "/usr/common/software/pytorch/v1.2.0-gpu/lib/python3.6/site-packages/torch/nn/modules/conv.py", line 24, in __init__
+    if out_channels % groups != 0:
+TypeError: not all arguments converted during string formatting

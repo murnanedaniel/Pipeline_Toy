@@ -1,0 +1,36 @@
+program: src/sweep_cli.py
+method: random
+name: ConvNetSweep
+parameters:
+  hidden_dim_1: 
+    min: 4 
+    max: 1000
+  kern_1:
+    min: 2
+    max: 8
+  hidden_dim_2: 
+    min: 4 
+    max: 1000
+  kern_2:
+    min: 2
+    max: 8
+  hidden_dim_3: 
+    min: 20 
+    max: 4000
+  hidden_dim_4: 
+    min: 20 
+    max: 1000
+  lr:
+    distribution: log_normal
+    max: -2.3
+    min: -11.5
+    mu: -6.9
+    sigma: 1.5
+  momentum:
+    min: 0.1
+    max: 0.9
+  n_epochs:
+    min: 2
+    max: 10
+    
+    

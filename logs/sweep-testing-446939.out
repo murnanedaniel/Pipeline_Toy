@@ -1,0 +1,869 @@
+
+Starting preprocessing
+
+Launching task 0
+Launching task 1
+Launching task 2
+Launching task 3
+Launching task 4
+Launching task 5
+Launching task 6
+Launching task 7
+wandb: Starting wandb agent 🕵️
+wandb: Starting wandb agent 🕵️
+wandb: Starting wandb agent 🕵️
+wandb: Starting wandb agent 🕵️
+wandb: Starting wandb agent 🕵️
+wandb: Starting wandb agent 🕵️
+wandb: Starting wandb agent 🕵️
+wandb: Starting wandb agent 🕵️
+2020-02-13 16:24:43,286 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:24:43,292 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:24:43,307 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:24:43,310 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:24:43,335 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:24:43,371 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:24:43,374 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:24:43,375 - wandb.wandb_agent - INFO - Running runs: []
+2020-02-13 16:24:43,508 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:24:43,508 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 125
+	hidden_dim_2: 202
+	hidden_dim_3: 1570
+	hidden_dim_4: 124
+	kern_1: 3
+	kern_2: 6
+	lr: 0.0006256461226864061
+	momentum: 0.8148016431154382
+	n_epochs: 3
+2020-02-13 16:24:43,517 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=125 --hidden_dim_2=202 --hidden_dim_3=1570 --hidden_dim_4=124 --kern_1=3 --kern_2=6 --lr=0.0006256461226864061 --momentum=0.8148016431154382 --n_epochs=3
+2020-02-13 16:24:43,566 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:24:43,566 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 986
+	hidden_dim_2: 46
+	hidden_dim_3: 2995
+	hidden_dim_4: 410
+	kern_1: 2
+	kern_2: 5
+	lr: 0.0009008117797510894
+	momentum: 0.64035247420724
+	n_epochs: 7
+2020-02-13 16:24:43,575 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=986 --hidden_dim_2=46 --hidden_dim_3=2995 --hidden_dim_4=410 --kern_1=2 --kern_2=5 --lr=0.0009008117797510894 --momentum=0.64035247420724 --n_epochs=7
+2020-02-13 16:24:43,628 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:24:43,628 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 741
+	hidden_dim_2: 396
+	hidden_dim_3: 3641
+	hidden_dim_4: 674
+	kern_1: 5
+	kern_2: 5
+	lr: 0.001104871986758032
+	momentum: 0.5983046053483062
+	n_epochs: 4
+2020-02-13 16:24:43,637 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=741 --hidden_dim_2=396 --hidden_dim_3=3641 --hidden_dim_4=674 --kern_1=5 --kern_2=5 --lr=0.001104871986758032 --momentum=0.5983046053483062 --n_epochs=4
+2020-02-13 16:24:43,692 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:24:43,693 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 803
+	hidden_dim_2: 779
+	hidden_dim_3: 2036
+	hidden_dim_4: 99
+	kern_1: 6
+	kern_2: 2
+	lr: 0.0020770992269504326
+	momentum: 0.8894267043649048
+	n_epochs: 2
+2020-02-13 16:24:43,702 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=803 --hidden_dim_2=779 --hidden_dim_3=2036 --hidden_dim_4=99 --kern_1=6 --kern_2=2 --lr=0.0020770992269504326 --momentum=0.8894267043649048 --n_epochs=2
+2020-02-13 16:24:43,748 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:24:43,748 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 283
+	hidden_dim_2: 513
+	hidden_dim_3: 509
+	hidden_dim_4: 213
+	kern_1: 6
+	kern_2: 2
+	lr: 0.006144393311156935
+	momentum: 0.8944400889873091
+	n_epochs: 9
+2020-02-13 16:24:43,755 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=283 --hidden_dim_2=513 --hidden_dim_3=509 --hidden_dim_4=213 --kern_1=6 --kern_2=2 --lr=0.006144393311156935 --momentum=0.8944400889873091 --n_epochs=9
+2020-02-13 16:24:43,793 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:24:43,793 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 188
+	hidden_dim_2: 350
+	hidden_dim_3: 1570
+	hidden_dim_4: 326
+	kern_1: 7
+	kern_2: 3
+	lr: 0.0007350495727322895
+	momentum: 0.8726692824222451
+	n_epochs: 4
+2020-02-13 16:24:43,803 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=188 --hidden_dim_2=350 --hidden_dim_3=1570 --hidden_dim_4=326 --kern_1=7 --kern_2=3 --lr=0.0007350495727322895 --momentum=0.8726692824222451 --n_epochs=4
+2020-02-13 16:24:43,842 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:24:43,842 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 543
+	hidden_dim_2: 732
+	hidden_dim_3: 1641
+	hidden_dim_4: 938
+	kern_1: 5
+	kern_2: 7
+	lr: 5.29426815685709e-05
+	momentum: 0.5343286107097444
+	n_epochs: 7
+2020-02-13 16:24:43,849 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=543 --hidden_dim_2=732 --hidden_dim_3=1641 --hidden_dim_4=938 --kern_1=5 --kern_2=7 --lr=5.29426815685709e-05 --momentum=0.5343286107097444 --n_epochs=7
+2020-02-13 16:24:43,985 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:24:43,986 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 627
+	hidden_dim_2: 246
+	hidden_dim_3: 974
+	hidden_dim_4: 812
+	kern_1: 2
+	kern_2: 8
+	lr: 0.0015587802019940609
+	momentum: 0.8587488098559901
+	n_epochs: 6
+2020-02-13 16:24:43,993 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=627 --hidden_dim_2=246 --hidden_dim_3=974 --hidden_dim_4=812 --kern_1=2 --kern_2=8 --lr=0.0015587802019940609 --momentum=0.8587488098559901 --n_epochs=6
+wandb: Tracking run with wandb version 0.8.27
+wandb: Tracking run with wandb version 0.8.27
+wandb: Tracking run with wandb version 0.8.27
+wandb: Tracking run with wandb version 0.8.27
+wandb: Tracking run with wandb version 0.8.27
+wandb: Tracking run with wandb version 0.8.27
+wandb: Tracking run with wandb version 0.8.27
+wandb: Tracking run with wandb version 0.8.27
+2020-02-13 16:24:48,529 - wandb.wandb_agent - INFO - Running runs: ['z3nol5dm']
+2020-02-13 16:24:48,588 - wandb.wandb_agent - INFO - Running runs: ['dfhyuw3o']
+2020-02-13 16:24:48,649 - wandb.wandb_agent - INFO - Running runs: ['owi11lgt']
+wandb: Run data is saved locally in wandb/run-20200214_002443-dfhyuw3o
+wandb: Run data is saved locally in wandb/run-20200214_002443-owi11lgt
+wandb: Run data is saved locally in wandb/run-20200214_002443-z3nol5dm
+2020-02-13 16:24:48,714 - wandb.wandb_agent - INFO - Running runs: ['zsk94dwv']
+2020-02-13 16:24:48,768 - wandb.wandb_agent - INFO - Running runs: ['ba6xxyjp']
+2020-02-13 16:24:48,818 - wandb.wandb_agent - INFO - Running runs: ['0lksrp5t']
+wandb: Syncing run likely-sweep-4
+wandb: Syncing run dry-sweep-3
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/dfhyuw3o
+wandb: Run `wandb off` to turn off syncing.
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/z3nol5dm
+wandb: Run `wandb off` to turn off syncing.
+wandb: Syncing run serene-sweep-5
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/owi11lgt
+wandb: Run `wandb off` to turn off syncing.
+wandb: Run data is saved locally in wandb/run-20200214_002443-zsk94dwv
+wandb: Run data is saved locally in wandb/run-20200214_002443-ba6xxyjp
+2020-02-13 16:24:48,861 - wandb.wandb_agent - INFO - Running runs: ['iy9bp5io']
+
+Files already downloaded and verified
+Files already downloaded and verified
+
+Files already downloaded and verified
+Files already downloaded and verified
+
+Files already downloaded and verified
+Files already downloaded and verified
+wandb: Run data is saved locally in wandb/run-20200214_002443-0lksrp5t
+wandb: Run data is saved locally in wandb/run-20200214_002443-iy9bp5io
+2020-02-13 16:24:49,006 - wandb.wandb_agent - INFO - Running runs: ['wrbnjfj1']
+wandb: Syncing run elated-sweep-7
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/ba6xxyjp
+wandb: Run `wandb off` to turn off syncing.
+wandb: Syncing run solar-sweep-6
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/zsk94dwv
+wandb: Run `wandb off` to turn off syncing.
+wandb: Run data is saved locally in wandb/run-20200214_002443-wrbnjfj1
+
+Files already downloaded and verified
+Files already downloaded and verified
+
+Files already downloaded and verified
+Files already downloaded and verified
+wandb: Syncing run stilted-sweep-9
+wandb: Syncing run faithful-sweep-8
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/iy9bp5io
+wandb: Run `wandb off` to turn off syncing.
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/0lksrp5t
+wandb: Run `wandb off` to turn off syncing.
+wandb: Syncing run happy-sweep-10
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/wrbnjfj1
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+
+Files already downloaded and verified
+Files already downloaded and verified
+
+Files already downloaded and verified
+Files already downloaded and verified
+Using  cuda
+Using  cuda
+Using  cuda
+Using  cuda
+Using  cuda
+Using  cuda
+Using  cuda
+Using  cuda
+[1,  2000] loss: 1.841
+[1,  4000] loss: 1.573
+[1,  6000] loss: 1.448
+[1,  8000] loss: 1.367
+[1, 10000] loss: 1.294
+[1, 12000] loss: 1.245
+[1,  2000] loss: 2.041
+[1,  4000] loss: 1.731
+[1,  6000] loss: 1.590
+[1,  8000] loss: 1.504
+[1, 10000] loss: 1.444
+[1, 12000] loss: 1.401
+[1,  2000] loss: 2.085
+[1,  4000] loss: 1.715
+[1,  6000] loss: 1.563
+[1,  8000] loss: 1.473
+[1, 10000] loss: 1.405
+[1, 12000] loss: 1.340
+Accuracy of the network on the 10000 test images: 56 %
+Accuracy of the network on the 10000 test images: 49 %
+Accuracy of the network on the 10000 test images: 53 %
+[1,  2000] loss: 2.163
+[1,  4000] loss: 1.850
+[1,  6000] loss: 1.668
+[1,  8000] loss: 1.543
+[1, 10000] loss: 1.476
+[1, 12000] loss: 1.404
+Accuracy of the network on the 10000 test images: 51 %
+[2,  2000] loss: 1.098
+[2,  4000] loss: 1.105
+[2,  6000] loss: 1.118
+[2,  8000] loss: 1.100
+[2, 10000] loss: 1.075
+[2, 12000] loss: 1.079
+[1,  2000] loss: 1.929
+[1,  4000] loss: 1.679
+[1,  6000] loss: 1.538
+[1,  8000] loss: 1.438
+[1, 10000] loss: 1.365
+[1, 12000] loss: 1.294
+[2,  2000] loss: 1.300
+[2,  4000] loss: 1.283
+[2,  6000] loss: 1.263
+[2,  8000] loss: 1.259
+[2, 10000] loss: 1.220
+[2, 12000] loss: 1.206
+[2,  2000] loss: 1.254
+[2,  4000] loss: 1.186
+[2,  6000] loss: 1.173
+[2,  8000] loss: 1.121
+[2, 10000] loss: 1.099
+[2, 12000] loss: 1.061
+Accuracy of the network on the 10000 test images: 63 %
+Accuracy of the network on the 10000 test images: 57 %
+Accuracy of the network on the 10000 test images: 62 %
+Accuracy of the network on the 10000 test images: 57 %
+[1,  2000] loss: 1.861
+[1,  4000] loss: 1.517
+[1,  6000] loss: 1.379
+[1,  8000] loss: 1.265
+[1, 10000] loss: 1.176
+[1, 12000] loss: 1.118
+Accuracy of the network on the 10000 test images: 63 %
+[1,  2000] loss: 2.047
+[1,  4000] loss: 1.726
+[1,  6000] loss: 1.572
+[1,  8000] loss: 1.477
+[1, 10000] loss: 1.406
+[1, 12000] loss: 1.346
+[3,  2000] loss: 0.894
+[3,  4000] loss: 0.935
+[3,  6000] loss: 0.938
+[3,  8000] loss: 0.960
+[3, 10000] loss: 0.951
+[3, 12000] loss: 0.969
+[3,  2000] loss: 1.092
+[3,  4000] loss: 1.085
+[3,  6000] loss: 1.080
+[3,  8000] loss: 1.051
+[3, 10000] loss: 1.083
+[3, 12000] loss: 1.034
+Accuracy of the network on the 10000 test images: 62 %
+[1,  2000] loss: 2.298
+[1,  4000] loss: 2.289
+[1,  6000] loss: 2.276
+[1,  8000] loss: 2.258
+[1, 10000] loss: 2.233
+[1, 12000] loss: 2.201
+[3,  2000] loss: 0.956
+[3,  4000] loss: 0.960
+[3,  6000] loss: 0.955
+[3,  8000] loss: 0.906
+[3, 10000] loss: 0.877
+[3, 12000] loss: 0.871
+[2,  2000] loss: 1.314
+[2,  4000] loss: 1.282
+[2,  6000] loss: 1.200
+[2,  8000] loss: 1.181
+[2, 10000] loss: 1.122
+[2, 12000] loss: 1.074
+Accuracy of the network on the 10000 test images: 62 %
+Accuracy of the network on the 10000 test images: 68 %
+Accuracy of the network on the 10000 test images: 62 %
+Accuracy of the network on the 10000 test images: 53 %
+Accuracy of the network on the 10000 test images: 25 %
+[4,  2000] loss: 0.776
+[4,  4000] loss: 0.868
+[4,  6000] loss: 0.819
+[4,  8000] loss: 0.872
+[4, 10000] loss: 0.925
+[4, 12000] loss: 0.935
+Accuracy of the network on the 10000 test images: 64 %
+[4,  2000] loss: 0.943
+[4,  4000] loss: 0.929
+[4,  6000] loss: 0.907
+[4,  8000] loss: 0.913
+[4, 10000] loss: 0.930
+[4, 12000] loss: 0.920
+[4,  2000] loss: 0.738
+[4,  4000] loss: 0.757
+[4,  6000] loss: 0.736
+[4,  8000] loss: 0.753
+[4, 10000] loss: 0.716
+[4, 12000] loss: 0.710
+[2,  2000] loss: 1.160
+[2,  4000] loss: 1.124
+[2,  6000] loss: 1.101
+[2,  8000] loss: 1.072
+[2, 10000] loss: 1.023
+[2, 12000] loss: 1.002
+Accuracy of the network on the 10000 test images: 65 %
+Accuracy of the network on the 10000 test images: 70 %
+Finished Training
+
+wandb: Waiting for W&B process to finish, PID 28929
+wandb: Program ended successfully.
+wandb: Run summary:
+wandb:               _timestamp 1581640069.6226728
+wandb:                 _runtime 184.54945182800293
+wandb:             val accuracy 70.53
+wandb:               train loss 9207.080914974213
+wandb:                 val loss 2132.8419037759304
+wandb:                    _step 3
+wandb: Syncing 8 W&B file(s) and 1 media file(s)
+wandb: - 3.97MB of 3.97MB uploadedwandb: \ 3.97MB of 3.97MB uploadedwandb: | 3.97MB of 3.97MB uploadedwandb: / 3.97MB of 3.97MB uploadedwandb: - 3.97MB of 3.97MB uploadedwandb:                                                                                
+wandb: Synced faithful-sweep-8: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/0lksrp5t
+Accuracy of the network on the 10000 test images: 66 %
+2020-02-13 16:28:00,108 - wandb.wandb_agent - INFO - Cleaning up finished run: 0lksrp5t
+2020-02-13 16:28:00,358 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:28:00,358 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 706
+	hidden_dim_2: 712
+	hidden_dim_3: 3625
+	hidden_dim_4: 861
+	kern_1: 7
+	kern_2: 2
+	lr: 0.0015105999964538563
+	momentum: 0.5521573030999737
+	n_epochs: 10
+2020-02-13 16:28:00,367 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=706 --hidden_dim_2=712 --hidden_dim_3=3625 --hidden_dim_4=861 --kern_1=7 --kern_2=2 --lr=0.0015105999964538563 --momentum=0.5521573030999737 --n_epochs=10
+wandb: Tracking run with wandb version 0.8.27
+wandb: Run data is saved locally in wandb/run-20200214_002800-hv17jkvb
+wandb: Syncing run absurd-sweep-11
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/hv17jkvb
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+2020-02-13 16:28:05,380 - wandb.wandb_agent - INFO - Running runs: ['hv17jkvb']
+Using  cuda
+[3,  2000] loss: 1.041
+[3,  4000] loss: 0.990
+[3,  6000] loss: 0.969
+[3,  8000] loss: 0.952
+[3, 10000] loss: 0.931
+[3, 12000] loss: 0.914
+Accuracy of the network on the 10000 test images: 67 %
+Finished Training
+
+wandb: Waiting for W&B process to finish, PID 28832
+wandb: Program ended successfully.
+[2,  2000] loss: 0.960
+[2,  4000] loss: 0.927
+[2,  6000] loss: 0.917
+[2,  8000] loss: 0.860
+[2, 10000] loss: 0.874
+[2, 12000] loss: 0.823
+wandb: Run summary:
+wandb:               train loss 12043.806576162577
+wandb:                    _step 2
+wandb:               _timestamp 1581640091.3891997
+wandb:                 _runtime 206.68251419067383
+wandb:                 val loss 2303.147281974554
+wandb:             val accuracy 67.49
+wandb: Syncing 8 W&B file(s) and 1 media file(s)
+wandb: - 3.92MB of 3.93MB uploadedwandb: \ 3.93MB of 3.93MB uploadedwandb: | 3.93MB of 3.93MB uploadedwandb: / 3.93MB of 3.93MB uploadedwandb: - 3.93MB of 3.93MB uploadedwandb: \ 3.93MB of 3.93MB uploadedwandb: | 3.93MB of 3.93MB uploadedwandb:                                                                                
+wandb: Synced dry-sweep-3: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/z3nol5dm
+Accuracy of the network on the 10000 test images: 70 %
+Finished Training
+
+wandb: Waiting for W&B process to finish, PID 28859
+wandb: Program ended successfully.
+2020-02-13 16:28:20,501 - wandb.wandb_agent - INFO - Cleaning up finished run: z3nol5dm
+2020-02-13 16:28:20,735 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:28:20,735 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 565
+	hidden_dim_2: 619
+	hidden_dim_3: 3926
+	hidden_dim_4: 463
+	kern_1: 5
+	kern_2: 7
+	lr: 0.0001071525949439294
+	momentum: 0.3201475158962671
+	n_epochs: 6
+2020-02-13 16:28:20,744 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=565 --hidden_dim_2=619 --hidden_dim_3=3926 --hidden_dim_4=463 --kern_1=5 --kern_2=7 --lr=0.0001071525949439294 --momentum=0.3201475158962671 --n_epochs=6
+wandb: Run summary:
+wandb:                 _runtime 211.8213505744934
+wandb:                 val loss 2119.6890746355057
+wandb:                    _step 1
+wandb:               train loss 11124.512449383736
+wandb:             val accuracy 70.76
+wandb:               _timestamp 1581640096.6981218
+wandb: Syncing 8 W&B file(s) and 1 media file(s)
+[5,  2000] loss: 0.741
+[5,  4000] loss: 0.789
+[5,  6000] loss: 0.812
+[5,  8000] loss: 0.854
+[5, 10000] loss: 0.883
+[5, 12000] loss: 0.943
+wandb: - 3.96MB of 3.97MB uploadedwandb: \ 3.97MB of 3.97MB uploadedwandb: | 3.97MB of 3.97MB uploadedwandb: / 3.97MB of 3.97MB uploadedwandb: - 3.97MB of 3.97MB uploadedwandb: \ 3.97MB of 3.97MB uploadedwandb: | 3.97MB of 3.97MB uploadedwandb:                                                                                
+wandb: Synced solar-sweep-6: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/zsk94dwv
+wandb: Tracking run with wandb version 0.8.27
+wandb: Run data is saved locally in wandb/run-20200214_002820-9a9zln2f
+wandb: Syncing run lively-sweep-12
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/9a9zln2f
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+Accuracy of the network on the 10000 test images: 64 %
+2020-02-13 16:28:25,757 - wandb.wandb_agent - INFO - Running runs: ['9a9zln2f']
+2020-02-13 16:28:25,866 - wandb.wandb_agent - INFO - Cleaning up finished run: zsk94dwv
+2020-02-13 16:28:26,120 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:28:26,120 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 273
+	hidden_dim_2: 729
+	hidden_dim_3: 1150
+	hidden_dim_4: 598
+	kern_1: 7
+	kern_2: 8
+	lr: 0.0004674966176111911
+	momentum: 0.5969726589712775
+	n_epochs: 7
+2020-02-13 16:28:26,126 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=273 --hidden_dim_2=729 --hidden_dim_3=1150 --hidden_dim_4=598 --kern_1=7 --kern_2=8 --lr=0.0004674966176111911 --momentum=0.5969726589712775 --n_epochs=7
+[5,  2000] loss: 0.783
+[5,  4000] loss: 0.783
+[5,  6000] loss: 0.786
+[5,  8000] loss: 0.805
+[5, 10000] loss: 0.801
+[5, 12000] loss: 0.800
+Using  cuda
+wandb: Tracking run with wandb version 0.8.27
+wandb: Run data is saved locally in wandb/run-20200214_002826-cfmahayw
+wandb: Syncing run gentle-sweep-13
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/cfmahayw
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+Accuracy of the network on the 10000 test images: 66 %
+2020-02-13 16:28:31,139 - wandb.wandb_agent - INFO - Running runs: ['cfmahayw']
+Using  cuda
+[6,  2000] loss: 0.763
+[6,  4000] loss: 0.817
+[6,  6000] loss: 0.877
+[6,  8000] loss: 0.912
+[6, 10000] loss: 0.971
+[6, 12000] loss: 1.014
+Accuracy of the network on the 10000 test images: 61 %
+[2,  2000] loss: 1.254
+[2,  4000] loss: 1.230
+[2,  6000] loss: 1.187
+[2,  8000] loss: 1.136
+[2, 10000] loss: 1.102
+[2, 12000] loss: 1.059
+[6,  2000] loss: 0.652
+[6,  4000] loss: 0.670
+[6,  6000] loss: 0.666
+[6,  8000] loss: 0.656
+[6, 10000] loss: 0.680
+[6, 12000] loss: 0.680
+Accuracy of the network on the 10000 test images: 68 %
+[2,  2000] loss: 2.147
+[2,  4000] loss: 2.095
+[2,  6000] loss: 2.055
+[2,  8000] loss: 2.017
+[2, 10000] loss: 1.977
+[2, 12000] loss: 1.952
+[3,  2000] loss: 0.870
+[3,  4000] loss: 0.862
+[3,  6000] loss: 0.864
+[3,  8000] loss: 0.854
+[3, 10000] loss: 0.851
+[3, 12000] loss: 0.828
+Accuracy of the network on the 10000 test images: 62 %
+Accuracy of the network on the 10000 test images: 30 %
+Accuracy of the network on the 10000 test images: 68 %
+[7,  2000] loss: 0.809
+[7,  4000] loss: 0.895
+[7,  6000] loss: 0.944
+[7,  8000] loss: 0.945
+[7, 10000] loss: 1.035
+[7, 12000] loss: 1.083
+Accuracy of the network on the 10000 test images: 59 %
+[7,  2000] loss: 0.513
+[7,  4000] loss: 0.546
+[7,  6000] loss: 0.540
+[7,  8000] loss: 0.540
+[7, 10000] loss: 0.559
+[7, 12000] loss: 0.566
+Accuracy of the network on the 10000 test images: 68 %
+Finished Training
+
+wandb: Waiting for W&B process to finish, PID 28847
+wandb: Program ended successfully.
+[1,  2000] loss: 2.259
+[1,  4000] loss: 2.018
+[1,  6000] loss: 1.852
+[1,  8000] loss: 1.753
+[1, 10000] loss: 1.678
+[1, 12000] loss: 1.583
+wandb: Run summary:
+wandb:               _timestamp 1581640197.5680077
+wandb:             val accuracy 68.58
+wandb:               train loss 6827.121140629053
+wandb:                 _runtime 312.8524124622345
+wandb:                 val loss 2355.9592573940754
+wandb:                    _step 6
+wandb: Syncing 8 W&B file(s) and 1 media file(s)
+wandb: - 3.93MB of 3.93MB uploadedwandb: \ 3.93MB of 3.93MB uploadedwandb: | 3.93MB of 3.93MB uploadedwandb: / 3.93MB of 3.93MB uploadedwandb: - 3.93MB of 3.93MB uploadedwandb: \ 3.93MB of 3.93MB uploadedwandb:                                                                                
+wandb: Synced likely-sweep-4: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/dfhyuw3o
+2020-02-13 16:30:04,150 - wandb.wandb_agent - INFO - Cleaning up finished run: dfhyuw3o
+2020-02-13 16:30:04,377 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:30:04,378 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 229
+	hidden_dim_2: 29
+	hidden_dim_3: 2026
+	hidden_dim_4: 246
+	kern_1: 7
+	kern_2: 4
+	lr: 0.000687149879179177
+	momentum: 0.8251625732709049
+	n_epochs: 9
+2020-02-13 16:30:04,391 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=229 --hidden_dim_2=29 --hidden_dim_3=2026 --hidden_dim_4=246 --kern_1=7 --kern_2=4 --lr=0.000687149879179177 --momentum=0.8251625732709049 --n_epochs=9
+Accuracy of the network on the 10000 test images: 44 %
+wandb: Tracking run with wandb version 0.8.27
+wandb: Run data is saved locally in wandb/run-20200214_003004-m8v4panr
+wandb: Syncing run valiant-sweep-14
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/m8v4panr
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+2020-02-13 16:30:09,407 - wandb.wandb_agent - INFO - Running runs: ['m8v4panr']
+Using  cuda
+[8,  2000] loss: 0.931
+[8,  4000] loss: 1.072
+[8,  6000] loss: 1.111
+[8,  8000] loss: 1.142
+[8, 10000] loss: 1.173
+[8, 12000] loss: 1.172
+[1,  2000] loss: 2.067
+[1,  4000] loss: 1.734
+[1,  6000] loss: 1.557
+[1,  8000] loss: 1.489
+[1, 10000] loss: 1.397
+[1, 12000] loss: 1.329
+Accuracy of the network on the 10000 test images: 53 %
+Accuracy of the network on the 10000 test images: 53 %
+[1,  2000] loss: 2.121
+[1,  4000] loss: 1.788
+[1,  6000] loss: 1.597
+[1,  8000] loss: 1.509
+[1, 10000] loss: 1.459
+[1, 12000] loss: 1.395
+Accuracy of the network on the 10000 test images: 51 %
+[1,  2000] loss: 2.298
+[1,  4000] loss: 2.284
+[1,  6000] loss: 2.258
+[1,  8000] loss: 2.215
+[1, 10000] loss: 2.155
+[1, 12000] loss: 2.087
+[4,  2000] loss: 0.654
+[4,  4000] loss: 0.688
+[4,  6000] loss: 0.689
+[4,  8000] loss: 0.702
+[4, 10000] loss: 0.702
+[4, 12000] loss: 0.684
+Accuracy of the network on the 10000 test images: 27 %
+Accuracy of the network on the 10000 test images: 70 %
+[9,  2000] loss: 1.156
+[9,  4000] loss: 1.237
+[9,  6000] loss: 1.191
+[9,  8000] loss: 1.242
+[9, 10000] loss: 1.580
+[9, 12000] loss: 1.546
+Accuracy of the network on the 10000 test images: 49 %
+Finished Training
+
+wandb: Waiting for W&B process to finish, PID 28871
+wandb: Program ended successfully.
+[2,  2000] loss: 1.316
+[2,  4000] loss: 1.293
+[2,  6000] loss: 1.233
+[2,  8000] loss: 1.189
+[2, 10000] loss: 1.197
+[2, 12000] loss: 1.165
+wandb: Run summary:
+wandb:                 _runtime 389.8169722557068
+wandb:               _timestamp 1581640274.7577167
+wandb:               train loss 16652.053587973118
+wandb:                 val loss 4634.298948943615
+wandb:                    _step 8
+wandb:             val accuracy 49.2
+wandb: Syncing 8 W&B file(s) and 1 media file(s)
+Accuracy of the network on the 10000 test images: 60 %
+wandb: - 3.97MB of 3.97MB uploadedwandb: \ 3.97MB of 3.97MB uploadedwandb: | 3.97MB of 3.97MB uploadedwandb: / 3.97MB of 3.97MB uploadedwandb: - 3.97MB of 3.97MB uploadedwandb:                                                                                
+wandb: Synced elated-sweep-7: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/ba6xxyjp
+2020-02-13 16:31:21,836 - wandb.wandb_agent - INFO - Cleaning up finished run: ba6xxyjp
+2020-02-13 16:31:22,058 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:31:22,058 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 936
+	hidden_dim_2: 757
+	hidden_dim_3: 1910
+	hidden_dim_4: 801
+	kern_1: 6
+	kern_2: 8
+	lr: 0.00047472733974120846
+	momentum: 0.29645528044555514
+	n_epochs: 6
+2020-02-13 16:31:22,067 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=936 --hidden_dim_2=757 --hidden_dim_3=1910 --hidden_dim_4=801 --kern_1=6 --kern_2=8 --lr=0.00047472733974120846 --momentum=0.29645528044555514 --n_epochs=6
+[3,  2000] loss: 0.979
+[3,  4000] loss: 0.965
+[3,  6000] loss: 0.939
+[3,  8000] loss: 0.940
+[3, 10000] loss: 0.905
+[3, 12000] loss: 0.910
+wandb: Tracking run with wandb version 0.8.27
+wandb: Run data is saved locally in wandb/run-20200214_003122-8y95r6hu
+wandb: Syncing run likely-sweep-15
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/8y95r6hu
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+2020-02-13 16:31:27,080 - wandb.wandb_agent - INFO - Running runs: ['8y95r6hu']
+Using  cuda
+[2,  2000] loss: 1.539
+[2,  4000] loss: 1.467
+[2,  6000] loss: 1.436
+[2,  8000] loss: 1.409
+[2, 10000] loss: 1.373
+[2, 12000] loss: 1.338
+[3,  2000] loss: 1.928
+[3,  4000] loss: 1.898
+[3,  6000] loss: 1.881
+[3,  8000] loss: 1.882
+[3, 10000] loss: 1.851
+[3, 12000] loss: 1.827
+Accuracy of the network on the 10000 test images: 68 %
+Accuracy of the network on the 10000 test images: 50 %
+Accuracy of the network on the 10000 test images: 34 %
+[3,  2000] loss: 1.050
+[3,  4000] loss: 1.063
+[3,  6000] loss: 1.051
+[3,  8000] loss: 1.027
+[3, 10000] loss: 1.008
+[3, 12000] loss: 1.004
+Accuracy of the network on the 10000 test images: 66 %
+[5,  2000] loss: 0.495
+[5,  4000] loss: 0.524
+[5,  6000] loss: 0.537
+[5,  8000] loss: 0.550
+[5, 10000] loss: 0.552
+[5, 12000] loss: 0.575
+[4,  2000] loss: 0.890
+[4,  4000] loss: 0.911
+[4,  6000] loss: 0.866
+[4,  8000] loss: 0.885
+[4, 10000] loss: 0.885
+[4, 12000] loss: 0.857
+Accuracy of the network on the 10000 test images: 68 %
+Accuracy of the network on the 10000 test images: 72 %
+[2,  2000] loss: 1.263
+[2,  4000] loss: 1.199
+[2,  6000] loss: 1.163
+[2,  8000] loss: 1.117
+[2, 10000] loss: 1.094
+[2, 12000] loss: 1.057
+[5,  2000] loss: 0.763
+[5,  4000] loss: 0.774
+[5,  6000] loss: 0.771
+[5,  8000] loss: 0.763
+[5, 10000] loss: 0.771
+[5, 12000] loss: 0.750
+[3,  2000] loss: 1.298
+[3,  4000] loss: 1.258
+[3,  6000] loss: 1.265
+[3,  8000] loss: 1.225
+[3, 10000] loss: 1.192
+[3, 12000] loss: 1.186
+Accuracy of the network on the 10000 test images: 68 %
+Accuracy of the network on the 10000 test images: 62 %
+Accuracy of the network on the 10000 test images: 57 %
+[2,  2000] loss: 2.015
+[2,  4000] loss: 1.962
+[2,  6000] loss: 1.940
+[2,  8000] loss: 1.922
+[2, 10000] loss: 1.890
+[2, 12000] loss: 1.846
+Accuracy of the network on the 10000 test images: 34 %
+[6,  2000] loss: 0.635
+[6,  4000] loss: 0.658
+[6,  6000] loss: 0.664
+[6,  8000] loss: 0.662
+[6, 10000] loss: 0.670
+[6, 12000] loss: 0.667
+Accuracy of the network on the 10000 test images: 69 %
+[4,  2000] loss: 0.791
+[4,  4000] loss: 0.782
+[4,  6000] loss: 0.778
+[4,  8000] loss: 0.768
+[4, 10000] loss: 0.759
+[4, 12000] loss: 0.758
+Accuracy of the network on the 10000 test images: 68 %
+Finished Training
+
+wandb: Waiting for W&B process to finish, PID 28848
+wandb: Program ended successfully.
+[4,  2000] loss: 1.807
+[4,  4000] loss: 1.807
+[4,  6000] loss: 1.781
+[4,  8000] loss: 1.763
+[4, 10000] loss: 1.766
+[4, 12000] loss: 1.733
+wandb: Run summary:
+wandb:                 val loss 2270.242705255747
+wandb:             val accuracy 68.11
+wandb:               _timestamp 1581640424.7813737
+wandb:               train loss 9665.982498049736
+wandb:                    _step 3
+wandb:                 _runtime 539.990237236023
+wandb: Syncing 8 W&B file(s) and 1 media file(s)
+wandb: - 3.92MB of 3.93MB uploadedwandb: \ 3.93MB of 3.93MB uploadedwandb: | 3.93MB of 3.93MB uploadedwandb: / 3.93MB of 3.93MB uploadedwandb: - 3.93MB of 3.93MB uploadedwandb: \ 3.93MB of 3.93MB uploadedwandb: | 3.93MB of 3.93MB uploadedwandb:                                                                                
+wandb: Synced serene-sweep-5: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/owi11lgt
+[6,  2000] loss: 0.357
+[6,  4000] loss: 0.382
+[6,  6000] loss: 0.398
+[6,  8000] loss: 0.407
+[6, 10000] loss: 0.430
+[6, 12000] loss: 0.445
+2020-02-13 16:33:51,709 - wandb.wandb_agent - INFO - Cleaning up finished run: owi11lgt
+2020-02-13 16:33:51,947 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:33:51,947 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 483
+	hidden_dim_2: 621
+	hidden_dim_3: 3877
+	hidden_dim_4: 323
+	kern_1: 6
+	kern_2: 2
+	lr: 0.00037007791708530517
+	momentum: 0.10716948690227435
+	n_epochs: 6
+2020-02-13 16:33:51,957 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=483 --hidden_dim_2=621 --hidden_dim_3=3877 --hidden_dim_4=323 --kern_1=6 --kern_2=2 --lr=0.00037007791708530517 --momentum=0.10716948690227435 --n_epochs=6
+Accuracy of the network on the 10000 test images: 38 %
+wandb: Tracking run with wandb version 0.8.27
+wandb: Run data is saved locally in wandb/run-20200214_003351-3a97swh9
+wandb: Syncing run spring-sweep-16
+wandb: ⭐️ View project at https://app.wandb.ai/murnanedaniel/convnet-toy
+wandb: 🧹 View sweep at https://app.wandb.ai/murnanedaniel/convnet-toy/sweeps/mpjidtgm
+wandb: 🚀 View run at https://app.wandb.ai/murnanedaniel/convnet-toy/runs/3a97swh9
+wandb: Run `wandb off` to turn off syncing.
+
+Files already downloaded and verified
+Files already downloaded and verified
+2020-02-13 16:33:56,969 - wandb.wandb_agent - INFO - Running runs: ['3a97swh9']
+Using  cuda
+Accuracy of the network on the 10000 test images: 72 %
+Finished Training
+
+wandb: Waiting for W&B process to finish, PID 28952
+wandb: Program ended successfully.
+wandb: Run summary:
+wandb:               train loss 5078.323189795017
+wandb:                 val loss 2276.4060024023056
+wandb:             val accuracy 72.31
+wandb:                    _step 5
+wandb:                 _runtime 554.8905627727509
+wandb:               _timestamp 1581640440.0424325
+wandb: Syncing 8 W&B file(s) and 1 media file(s)
+wandb: - 3.96MB of 3.97MB uploadedwandb: \ 3.97MB of 3.97MB uploadedwandb: | 3.97MB of 3.97MB uploadedwandb: / 3.97MB of 3.97MB uploadedwandb: - 3.97MB of 3.97MB uploadedwandb: \ 3.97MB of 3.97MB uploadedwandb: | 3.97MB of 3.97MB uploadedwandb:                                                                                
+wandb: Synced happy-sweep-10: https://app.wandb.ai/murnanedaniel/convnet-toy/runs/wrbnjfj1
+[7,  2000] loss: 0.537
+[7,  4000] loss: 0.545
+[7,  6000] loss: 0.549
+[7,  8000] loss: 0.563
+[7, 10000] loss: 0.568
+[7, 12000] loss: 0.580
+2020-02-13 16:34:07,510 - wandb.wandb_agent - INFO - Cleaning up finished run: wrbnjfj1
+2020-02-13 16:34:07,761 - wandb.wandb_agent - INFO - Agent received command: run
+2020-02-13 16:34:07,761 - wandb.wandb_agent - INFO - Agent starting run with config:
+	hidden_dim_1: 238
+	hidden_dim_2: 979
+	hidden_dim_3: 1649
+	hidden_dim_4: 595
+	kern_1: 4
+	kern_2: 8
+	lr: 0.009202231682496459
+	momentum: 0.8388632500748997
+	n_epochs: 8
+2020-02-13 16:34:07,771 - wandb.wandb_agent - INFO - About to run command: /usr/bin/env python src/sweep_cli.py --hidden_dim_1=238 --hidden_dim_2=979 --hidden_dim_3=1649 --hidden_dim_4=595 --kern_1=4 --kern_2=8 --lr=0.009202231682496459 --momentum=0.8388632500748997 --n_epochs=8
+Accuracy of the network on the 10000 test images: 71 %
+wandb: Tracking run with wandb version 0.8.27
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+srun: Job step aborted: Waiting up to 32 seconds for job step to finish.
+slurmstepd: error: *** JOB 446939 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
+slurmstepd: error: *** STEP 446939.4 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
+slurmstepd: error: *** STEP 446939.1 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
+slurmstepd: error: *** STEP 446939.0 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
+slurmstepd: error: *** STEP 446939.6 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
+slurmstepd: error: *** STEP 446939.7 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
+slurmstepd: error: *** STEP 446939.3 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
+slurmstepd: error: *** STEP 446939.5 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
+slurmstepd: error: *** STEP 446939.2 ON cgpu03 CANCELLED AT 2020-02-13T16:34:10 DUE TO PREEMPTION ***
