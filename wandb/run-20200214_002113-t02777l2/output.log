@@ -1,8 +1,0 @@
-Using  cuda
-[1,  2000] loss: 2.227
-[1,  4000] loss: 1.971
-[1,  6000] loss: 1.851
-[1,  8000] loss: 1.737
-[1, 10000] loss: 1.656
-[1, 12000] loss: 1.581
-Accuracy of the network on the 10000 test images: 44 %

@@ -1,9 +1,0 @@
-Traceback (most recent call last):
-  File "src/sweep_test.py", line 127, in <module>
-    main()
-  File "src/sweep_test.py", line 65, in main
-    m_configs = {args[k] for k in m_dic} # Retrieve the HPs from W&B
-Using  cuda
-  File "src/sweep_test.py", line 65, in <setcomp>
-    m_configs = {args[k] for k in m_dic} # Retrieve the HPs from W&B
-KeyError: 'kern_1'
