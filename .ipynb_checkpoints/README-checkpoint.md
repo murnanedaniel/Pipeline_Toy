@@ -247,7 +247,7 @@ You can see my output with https://app.wandb.ai/murnanedaniel/convnet-toy
 
 ## Hyperparameter Optimisation
 
-![]{https://camo.githubusercontent.com/92d38d547705ea1474852ca5927a13ee44cafab1/68747470733a2f2f696d67732e786b63642e636f6d2f636f6d6963732f7374616e64617264732e706e67}
+![]{https://imgs.xkcd.com/comics/standards.png}
 
 Broadly, our model can be described as Convolution 1 with kernel size K<sub>1</sub>, hidden layer size H<sub>1</sub>, Convolution 2 with kernel size K<sub>2</sub>, hidden layer size H<sub>2</sub>, two fully connected layers with H<sub>3</sub> and H<sub>4</sub> hidden features, and an output layer. Thus we have 6 interesting hyperparameters (HPs) within the model, not to mention several training HPs, including the learning rate, momentum, and number of epochs. Starting from this set, we have a 9-dimensional space in which to find the best model. Rather than searching this manually, we can ask W&B to select combinations of these 9 HPs and pass them to the model class and training method. 
 
