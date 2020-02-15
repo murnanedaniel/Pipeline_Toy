@@ -1,0 +1,7 @@
+md5: a2d8f3bb04336b3bb5a6c6e51c8d19d2
+outs:
+- md5: 23ea447247959c84f2731ee61191ed3a
+  path: test-output.pth
+  cache: true
+  metric: false
+  persist: false

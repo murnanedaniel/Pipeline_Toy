@@ -2,3 +2,4 @@
 /cifar_net.pth
 /acc.metric
 /wandb
+/test-output.pth
