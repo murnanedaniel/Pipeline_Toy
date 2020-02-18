@@ -149,6 +149,7 @@ or `git push --tags` to push all tags.
 ### Changing the Model
 
 * Update some hyperparameters
+
 Let's make the model wider (i.e. increase the size of the hidden layer of the convolution). First, refactor out the model information into a file called `convNet.py` in a `src/models/` directory. We will import this model into the evaluation and training with 
 
 ``` from models.convNet import Net```
@@ -191,11 +192,7 @@ dvc metrics show -T
 
 If you're anything like me, you'll see that the model did a little better. It may have even been faster.
 
-Let's make more changes... 
-
-**Need to shuffle some DVC add things here, so that the models directory is under DVC control**
-
-Try running repro evaluate. Should say that nothing has changed. That's because now we're only changing our model file, which is not under DVC control or part of the pipeline. We need to update the pipeline to reflect our refactored structure. `dvc add` the models/ directory, and re-run the `dvc run` commands above, with `-d src/models/` included as a flag. We will see the new model's performance - it's even better for me. Commit, push and tag it. Compare metrics, and I have
+Let's make more changes to the `Net()` model in `convNet.py`, for example by adding many more fully connected weights. Try running repro evaluate. We should get a message saying that nothing has changed, so there's no need to run the evaluation. That's because now we're only changing our model file, which is not under DVC control or part of the pipeline. We need to update the pipeline to reflect our refactored structure. `dvc add` the models/ directory, and re-run the `dvc run` commands above, with `-d src/models/` included as a flag. We will see the new model's performance - it's even better for me. Commit, push and tag it. Compare metrics, and I have
 
 ```
 working tree:                                                           
@@ -218,8 +215,14 @@ huge-convnet:
 
 My very wide, 2-layer ConvNet is giving 68% accuracy, in 5.7 seconds. Go ahead and change some more of the hyperparameters, running `dvc repro evaluate.dvc` and commiting and tagging each experiment. 
 
-* **Checkout to go back to master**
-* **Compare metrics**
+---
+**Some hard-won lessons on git vs. dvc control**
+
+In general, feel free to put everything under git control, and then subsequently add it as data with `dvc add`. However, be aware of some catches:
+* DVC will complain if it's already under the control of git. Simply remove it first from git control with `git rm (-r) --cached <file (or folder) name>`
+* Any dependencies of `dvc run` should be under dvc control (i.e. `dvc add`ed), or the dependency will not be tracked, and it is superfluous to include it in `dvc run`. Only `-o` flagged files/folders will be automatically tracked, not `-d` flagged files/folders
+* You may accidentally `git commit` some large data. Every subsequent push to GitHub will throw a complaint about the size of the commit. Breathe, relax, and run `git filter-branch --tree-filter 'rm -rf path/to/your/file-or-folder' HEAD` on the offending data folder or file. See [this SO answer](https://stackoverflow.com/questions/10622179/how-to-find-identify-large-commits-in-git-history) for further help on this mistake.
+---
 
 I found a good improvement from increasing the number of training epochs to > 5. DVC is very good at making these steps easy to run, and ensuring that no data is lost along the way. But its metric comparison leaves a lot to be desired. We can insert some easy functions provided by Weights & Biases to visualise the training over epochs, and between models.
 
@@ -227,9 +230,7 @@ I found a good improvement from increasing the number of training epochs to > 5.
 
 ## Visualising Performance 
 
-* Include W&B in training
-
-To begin, ensure that W&B is installed with `pip install --user wandb`. You will also need run wandb login from the command line, ensuring you have a W&B account.
+To begin, ensure that Weights & Biases is installed with `pip install --user wandb`. You will also need run wandb login from the command line, ensuring you have a W&B account (by signing up at www.wandb.ai).
 
 Now we need to make the following additions to our `train.py` script:
 1. `import wandb` in the prelogue
@@ -237,17 +238,14 @@ Now we need to make the following additions to our `train.py` script:
 3. `wandb.watch(model, log="all")` in the train() function
 4. `wandb.log({"train loss": train_loss, "val loss": val_loss, "val accuracy": val_acc})` at the end of each training epoch
 
-* Run an evaluation
+Any results from changes we make to the architecture or hyperparameters will be tracked in W&B. Let us call this "manual tuning". It doesn't require any more code updates than these four steps. Go ahead and run `dvc repro train.dvc` to see the results be sent to W&B. You can see my output with https://app.wandb.ai/murnanedaniel/convnet-toy
 
-
-
-* Show some plots
-
-You can see my output with https://app.wandb.ai/murnanedaniel/convnet-toy
+Now that we have a more sophisticated way to visualise and identify better-performing models, there is also a more sophisticated way to reproduce them. I suggest two convenient habits:
+1. During training, save the checkpoint of each epoch in a `/checkpoints` folder. At the end of training, save the best-performing model checkpoint to W&B with `wandb.save('/checkpoints/<best-model-epoch>')`. Then, given a run ID, the best model and its HP configurations are quickly available for inference with `best_model = wandb.restore('<best-model-epoch>', run_path="murnanedaniel/convnet-toy/<run ID>"`.
+2. For closer analysis, and to fully reproduce the run, ensure that the `/checkpoints` folder is tagged with `-o` in `dvc run` and git committed. Then, run `wandb restore <run ID>` from the command line. This checks out the git commit associated with a particular run ID, then we can run `dvc checkout` to restore all the input data and model and checkpoint files associated with the run. 
+**CHECK THAT THIS WORKS! THERE MIGHT BE AN ISSUE WITH THE COMMIT BEING ONE STEP BEHIND...**
 
 ## Hyperparameter Optimisation
-
-![]{https://imgs.xkcd.com/comics/standards.png}
 
 Broadly, our model can be described as Convolution 1 with kernel size K<sub>1</sub>, hidden layer size H<sub>1</sub>, Convolution 2 with kernel size K<sub>2</sub>, hidden layer size H<sub>2</sub>, two fully connected layers with H<sub>3</sub> and H<sub>4</sub> hidden features, and an output layer. Thus we have 6 interesting hyperparameters (HPs) within the model, not to mention several training HPs, including the learning rate, momentum, and number of epochs. Starting from this set, we have a 9-dimensional space in which to find the best model. Rather than searching this manually, we can ask W&B to select combinations of these 9 HPs and pass them to the model class and training method. 
 
@@ -395,6 +393,9 @@ parameters:
 
 Note that this will be a "dumb" sweep - it is randomly sampling the HP space. We will make it "smart" later.
 
+## An Opinionated Way to Handle DVC with W&B
+
+![](https://imgs.xkcd.com/comics/standards.png)
 
 * Run the sweep on interactive node
 Now, we add a `dvc run` for the sweep. Note that we can't have the same output file as the regular train script, so let's change the model output to `cifar_net_sweep.pth`.
@@ -408,5 +409,4 @@ Now, we add a `dvc run` for the sweep. Note that we can't have the same output f
 * Show when this runs, and when it doesn't need to
 
 
-
-
+## Important Points
